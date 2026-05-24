@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Hiring and Training Intelligence Agent</title>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --purple:#7c3aed;--purple-l:#ede9fe;--purple-d:#5b21b6;
+  --green:#16a34a;--green-l:#dcfce7;
+  --red:#dc2626;--red-l:#fee2e2;
+  --amber:#d97706;--amber-l:#fef3c7;
+  --blue:#2563eb;--blue-l:#dbeafe;
+  --g50:#f9fafb;--g100:#f3f4f6;--g200:#e5e7eb;--g300:#d1d5db;
+  --g400:#9ca3af;--g500:#6b7280;--g700:#374151;--g800:#1f2937;--g900:#111827;
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--g50);color:var(--g900);line-height:1.5;}
+
+/* ACCENT */
+.accent{height:4px;background:linear-gradient(90deg,var(--purple-d),var(--purple),#a855f7);}
+
+/* HEADER */
+.hdr{background:#fff;padding:20px 32px 0;border-bottom:1px solid var(--g200);box-shadow:0 1px 4px rgba(0,0,0,.06);}
+.hdr-row{display:flex;align-items:center;gap:14px;margin-bottom:20px;}
+.logo{width:44px;height:44px;background:var(--purple);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.hdr-t{font-size:20px;font-weight:800;color:var(--g900);}
+.hdr-s{font-size:13px;color:var(--g500);margin-top:1px;}
+
+/* KPI */
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;padding-bottom:20px;}
+.kpi{background:#fff;border:1px solid var(--g200);border-radius:10px;padding:14px 18px;transition:box-shadow .2s;}
+.kpi:hover{box-shadow:0 4px 12px rgba(0,0,0,.08);}
+.kpi-lbl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--g500);margin-bottom:6px;}
+.kpi-val{font-size:26px;font-weight:900;margin-bottom:3px;}
+.kpi-sub{font-size:12px;color:var(--g500);}
+.kpi-val.red{color:var(--red);}.kpi-val.grn{color:var(--green);}
+
+/* TABS */
+.tabbar{background:#fff;border-bottom:1px solid var(--g200);padding:0 32px;position:sticky;top:0;z-index:100;box-shadow:0 2px 4px rgba(0,0,0,.04);}
+.tabbar nav{display:flex;}
+.tb{padding:15px 22px;background:none;border:none;border-bottom:3px solid transparent;font-size:14px;font-weight:600;color:var(--g500);cursor:pointer;transition:all .2s;white-space:nowrap;}
+.tb:hover{color:var(--purple);}
+.tb.on{color:var(--purple);border-bottom-color:var(--purple);}
+
+/* MAIN */
+.main{max-width:1440px;margin:0 auto;padding:28px 32px;}
+.pane{display:none;animation:fadeUp .3s ease;}
+.pane.on{display:block;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+
+/* SECTION */
+.sec{margin-bottom:28px;}
+.sec-t{font-size:17px;font-weight:800;color:var(--g900);}
+.sec-s{font-size:13px;color:var(--g500);margin-top:2px;margin-bottom:16px;}
+
+/* CARD */
+.card{background:#fff;border:1px solid var(--g200);border-radius:12px;padding:20px;}
+
+/* GRIDS */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+
+/* TABLE */
+.tbl{width:100%;border-collapse:collapse;}
+.tbl th{background:var(--g50);padding:9px 13px;text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--g500);border-bottom:1px solid var(--g200);}
+.tbl td{padding:11px 13px;font-size:13px;border-bottom:1px solid var(--g100);color:var(--g700);}
+.tbl tr:last-child td{border-bottom:none;}
+
+/* BADGES */
+.badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;}
+.b-red{background:var(--red-l);color:var(--red);}
+.b-grn{background:var(--green-l);color:var(--green);}
+.b-amb{background:var(--amber-l);color:var(--amber);}
+.b-pur{background:var(--purple-l);color:var(--purple);}
+.b-blu{background:var(--blue-l);color:var(--blue);}
+
+/* BUTTON */
+.btn{display:inline-flex;align-items:center;justify-content:center;padding:10px 22px;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;transition:all .2s;}
+.btn-pur{background:var(--purple);color:#fff;}
+.btn-pur:hover{background:var(--purple-d);box-shadow:0 4px 14px rgba(124,58,237,.35);transform:translateY(-1px);}
+
+/* FORM */
+select,textarea{width:100%;padding:10px 13px;border:1px solid var(--g300);border-radius:8px;font-size:14px;color:var(--g700);background:#fff;font-family:inherit;outline:none;transition:border-color .2s,box-shadow .2s;}
+select:focus,textarea:focus{border-color:var(--purple);box-shadow:0 0 0 3px rgba(124,58,237,.1);}
+textarea{resize:vertical;min-height:90px;}
+
+/* PROGRESS */
+.pb-wrap{margin-bottom:12px;}
+.pb-row{display:flex;justify-content:space-between;font-size:13px;color:var(--g700);margin-bottom:4px;}
+.pb-score{font-weight:800;color:var(--purple);}
+.pb-bg{height:8px;background:var(--g100);border-radius:4px;overflow:hidden;}
+.pb-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--purple),#a855f7);width:0;transition:width .9s cubic-bezier(.4,0,.2,1);}
+
+/* RING STAT */
+.ring{width:130px;height:130px;border-radius:50%;border:7px solid var(--red-l);display:flex;flex-direction:column;align-items:center;justify-content:center;margin:16px auto;}
+.ring-v{font-size:32px;font-weight:900;color:var(--red);}
+.ring-s{font-size:10px;color:var(--red);font-weight:600;text-align:center;}
+
+/* FLOW STEPS */
+.flow-wrap{display:flex;align-items:center;overflow-x:auto;padding:8px 0;}
+.fn-box{flex:1;min-width:110px;text-align:center;}
+.fn-bub{width:54px;height:54px;border-radius:50%;background:var(--purple);color:#fff;font-size:20px;font-weight:900;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;box-shadow:0 4px 14px rgba(124,58,237,.3);}
+.fn-t{font-size:13px;font-weight:800;color:var(--g800);margin-bottom:3px;}
+.fn-d{font-size:11px;color:var(--g500);line-height:1.4;}
+.fa{flex-shrink:0;padding:0 6px;margin-top:-28px;}
+.fa-line{width:36px;height:2px;background:linear-gradient(90deg,var(--purple),#a855f7);position:relative;}
+.fa-line::after{content:'';position:absolute;right:-5px;top:-4px;border:5px solid transparent;border-left-color:#a855f7;}
+
+/* FUNNEL */
+.funnel{display:flex;flex-direction:column;align-items:center;gap:6px;}
+.funnel-box{padding:12px 16px;border-radius:8px;text-align:center;font-size:14px;font-weight:700;}
+.funnel-dn{font-size:22px;color:var(--g400);line-height:1;}
+
+/* PILL TABS */
+.pills{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px;}
+.pill{padding:5px 16px;border:1px solid var(--g300);border-radius:20px;background:none;font-size:13px;font-weight:600;color:var(--g500);cursor:pointer;transition:all .2s;}
+.pill.on{background:var(--purple);color:#fff;border-color:var(--purple);}
+.pill:hover:not(.on){border-color:var(--purple);color:var(--purple);}
+
+/* TRANSCRIPT */
+.transcript-scroll{background:var(--g50);border-radius:10px;padding:14px;min-height:220px;max-height:320px;overflow-y:auto;}
+.msg{margin-bottom:10px;animation:msgIn .35s ease;}
+@keyframes msgIn{from{opacity:0;transform:translateX(-8px);}to{opacity:1;transform:translateX(0);}}
+.msg-bub{padding:9px 13px;border-radius:8px;font-size:13px;color:var(--g700);}
+.msg-c{border-left:3px solid var(--red);background:#fff;}
+.msg-a{border-left:3px solid var(--purple);background:var(--purple-l);}
+.msg-sender{font-size:10px;font-weight:800;margin-bottom:3px;text-transform:uppercase;letter-spacing:.5px;}
+
+/* ASSIST DARK */
+.assist-dark{background:#111827;border-radius:12px;padding:20px;}
+.assist-dark h4{font-size:11px;font-weight:800;color:#a855f7;text-transform:uppercase;letter-spacing:1px;margin-bottom:14px;}
+.a-row{margin-bottom:13px;padding-bottom:13px;border-bottom:1px solid #1f2937;}
+.a-row:last-child{margin-bottom:0;padding-bottom:0;border-bottom:none;}
+.a-lbl{font-size:10px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px;}
+.a-val{font-size:14px;font-weight:700;color:#f9fafb;}
+.a-val.warn{color:#fbbf24;}.a-val.crit{color:#f87171;}
+
+/* LOOP DIAGRAM */
+.loop-diagram{max-width:860px;margin:0 auto;}
+.loop-top-row,.loop-bot-row{display:flex;align-items:center;}
+.loop-node{padding:12px 10px;border-radius:10px;text-align:center;font-size:11px;font-weight:800;color:#fff;line-height:1.4;flex-shrink:0;width:148px;}
+.loop-h-arrow{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;}
+.loop-h-line{width:100%;height:3px;position:relative;}
+.loop-h-line.fwd{background:var(--green);}
+.loop-h-line.fwd::after{content:'';position:absolute;right:-7px;top:-5px;border:7px solid transparent;border-left-color:var(--green);}
+.loop-h-line.bwd{background:var(--purple);}
+.loop-h-line.bwd::before{content:'';position:absolute;left:-7px;top:-5px;border:7px solid transparent;border-right-color:var(--purple);}
+.loop-corr{font-size:11px;font-weight:700;}
+.loop-verts{display:flex;justify-content:space-between;padding:0 73px;}
+.loop-vert{display:flex;flex-direction:column;align-items:center;}
+.loop-vert-line{width:3px;height:36px;}
+
+/* COHORT ROWS */
+.row-ai{background:#f0fdf4;}.row-leg{background:#fffbeb;}.row-ret{background:var(--g50);}
+
+/* IMPACT TABLE */
+.td-b{color:var(--red);font-weight:700;}.td-a{color:var(--green);font-weight:700;}
+
+/* SCORE PANEL */
+.score-panel{animation:popIn .35s ease;}
+@keyframes popIn{from{opacity:0;transform:scale(.97);}to{opacity:1;transform:scale(1);}}
+
+/* SCENARIO CALLOUT */
+.s-callout{background:var(--purple-l);border-left:4px solid var(--purple);border-radius:8px;padding:14px 16px;margin-bottom:14px;}
+.s-callout .slbl{font-size:11px;font-weight:800;color:var(--purple);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;}
+.s-callout .stxt{font-size:14px;color:var(--g800);font-style:italic;line-height:1.6;}
+
+/* LIVE DOT */
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:.3;}}
+.ldot{width:8px;height:8px;border-radius:50%;background:var(--red);display:inline-block;animation:blink 1s infinite;}
+
+/* FOOTER */
+.footer{text-align:center;padding:22px;font-size:13px;color:var(--g500);border-top:1px solid var(--g200);margin-top:20px;}
+
+/* RESPONSIVE */
+@media(max-width:1100px){.g4{grid-template-columns:1fr 1fr;}.kpi-row{grid-template-columns:1fr 1fr;}}
+@media(max-width:768px){.main{padding:16px;}.g2,.g3,.g4{grid-template-columns:1fr;}.kpi-row{grid-template-columns:1fr 1fr;}.hdr{padding:16px 16px 0;}.tabbar{padding:0 16px;}}
+</style>
+</head>
+<body>
+
+<div class="accent"></div>
+
+<!-- HEADER -->
+<header class="hdr">
+  <div class="hdr-row">
+    <div class="logo">⚡</div>
+    <div>
+      <div class="hdr-t">AI Hiring and Training Intelligence Agent</div>
+      <div class="hdr-s">Contact Centre Performance Intelligence Platform</div>
+    </div>
+  </div>
+  <div class="kpi-row">
+    <div class="kpi"><div class="kpi-lbl">Agents Analyzed</div><div class="kpi-val">224</div><div class="kpi-sub">12-month cohort study</div></div>
+    <div class="kpi"><div class="kpi-lbl">Assessment Correlation Before</div><div class="kpi-val red">p = 0.828</div><div class="kpi-sub">No predictive signal</div></div>
+    <div class="kpi"><div class="kpi-lbl">Assessment Correlation After</div><div class="kpi-val grn">p = 0.04</div><div class="kpi-sub">Statistically significant</div></div>
+    <div class="kpi"><div class="kpi-lbl">Bottom Quartile Reduction</div><div class="kpi-val grn">50%</div><div class="kpi-sub">44% → 22% of population</div></div>
+  </div>
+</header>
+
+<!-- TAB BAR -->
+<div class="tabbar">
+  <nav>
+    <button class="tb on"  onclick="switchTab('hiring',this)">Hiring Intelligence</button>
+    <button class="tb"     onclick="switchTab('training',this)">Training Performance</button>
+    <button class="tb"     onclick="switchTab('feedback',this)">Performance Feedback Loop</button>
+  </nav>
+</div>
+
+<div class="main">
+
+<!-- ================================================================
+     TAB 1 — HIRING INTELLIGENCE
+     ================================================================ -->
+<div id="pane-hiring" class="pane on">
+
+  <!-- S1: Assessment Validity -->
+  <div class="sec">
+    <div class="sec-t">Pre-Hire Assessment Predictive Validity Analysis</div>
+    <div class="sec-s">Chi-Square analysis across 224 agent cohort</div>
+    <div class="g2">
+
+      <div class="card" style="text-align:center;padding:32px 24px;">
+        <div style="font-size:15px;font-weight:700;color:var(--g700);margin-bottom:4px;">Top Band Scorers — Production Outcome</div>
+        <div class="ring"><div class="ring-v">51%</div><div class="ring-s">bottom<br>quartile</div></div>
+        <div style="font-size:14px;color:var(--g500);margin-bottom:18px;">fell in bottom quartile of production</div>
+        <span class="badge b-red" style="font-size:13px;padding:7px 18px;">p = 0.828 — No Correlation</span>
+      </div>
+
+      <div class="card">
+        <div style="font-size:14px;font-weight:700;color:var(--g700);margin-bottom:14px;">Assessment Band vs Production Outcome</div>
+        <table class="tbl">
+          <thead><tr><th>Band</th><th>Agents</th><th>Top Quartile</th><th>Bottom Quartile</th><th>Signal</th></tr></thead>
+          <tbody>
+            <tr><td style="font-weight:700;">Strongly Recommended</td><td>84</td><td style="color:var(--green);font-weight:700;">49%</td><td style="color:var(--red);font-weight:700;">51%</td><td>❌ None</td></tr>
+            <tr><td style="font-weight:700;">Recommended</td><td>76</td><td style="color:var(--green);font-weight:700;">51%</td><td style="color:var(--red);font-weight:700;">49%</td><td>❌ None</td></tr>
+            <tr><td style="font-weight:700;">Borderline</td><td>42</td><td style="color:var(--green);font-weight:700;">48%</td><td style="color:var(--red);font-weight:700;">52%</td><td>❌ None</td></tr>
+            <tr><td style="font-weight:700;">Not Recommended</td><td>22</td><td style="color:var(--green);font-weight:700;">46%</td><td style="color:var(--red);font-weight:700;">54%</td><td>❌ None</td></tr>
+          </tbody>
+        </table>
+        <div style="margin-top:14px;padding:10px;background:var(--red-l);border-radius:8px;font-size:13px;color:var(--red);">
+          <strong>Insight:</strong> No assessment band shows meaningful predictive ability. Top scorers and bottom scorers produce virtually identical production outcomes.
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- S2: Cost of Poor Hiring -->
+  <div class="sec">
+    <div class="sec-t">Cost of Poor Hiring Signal</div>
+    <div class="sec-s">Quantified business impact of assessment without predictive validity</div>
+    <div class="g3">
+      <div class="card" style="border-left:4px solid var(--red);">
+        <div style="font-size:34px;font-weight:900;color:var(--red);margin-bottom:6px;">44%</div>
+        <div style="font-size:14px;font-weight:800;color:var(--g800);margin-bottom:6px;">below quality threshold</div>
+        <div style="font-size:13px;color:var(--g500);margin-bottom:12px;">Nearly double the 20–23% industry norm for bottom-quartile agent rates</div>
+        <span class="badge b-red">High Risk</span>
+      </div>
+      <div class="card" style="border-left:4px solid var(--red);">
+        <div style="font-size:34px;font-weight:900;color:var(--red);margin-bottom:6px;">30%</div>
+        <div style="font-size:14px;font-weight:800;color:var(--g800);margin-bottom:6px;">retraining failure rate</div>
+        <div style="font-size:13px;color:var(--g500);margin-bottom:12px;">Agents with 19 months tenure could not reach production standard despite retraining</div>
+        <span class="badge b-red">Chronic Issue</span>
+      </div>
+      <div class="card" style="border-left:4px solid var(--red);">
+        <div style="font-size:34px;font-weight:900;color:var(--red);margin-bottom:6px;">12–16</div>
+        <div style="font-size:14px;font-weight:800;color:var(--g800);margin-bottom:6px;">weeks wasted per failed hire</div>
+        <div style="font-size:13px;color:var(--g500);margin-bottom:12px;">Full onboarding and ramp-up cost incurred before identifying below-standard agents</div>
+        <span class="badge b-red">Cost Drag</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- S3: AI Assessment Pipeline -->
+  <div class="sec">
+    <div class="sec-t">AI-Powered Assessment Built on Real Production Data</div>
+    <div class="sec-s">Four-stage pipeline transforms call transcripts into validated hiring signal</div>
+    <div class="card">
+      <div class="flow-wrap">
+        <div class="fn-box"><div class="fn-bub">1</div><div class="fn-t">Real Call Transcripts</div><div class="fn-d">Anonymised production calls ingested at scale</div></div>
+        <div class="fa"><div class="fa-line"></div></div>
+        <div class="fn-box"><div class="fn-bub">2</div><div class="fn-t">Top Intents Extracted</div><div class="fn-d">Late Fee · AutoPay · Damaged Device · Port-Out</div></div>
+        <div class="fa"><div class="fa-line"></div></div>
+        <div class="fn-box"><div class="fn-bub">3</div><div class="fn-t">Scenarios Generated</div><div class="fn-d">Calibrated to actual production complexity</div></div>
+        <div class="fa"><div class="fa-line"></div></div>
+        <div class="fn-box"><div class="fn-bub">4</div><div class="fn-t">Scored vs Top Performers</div><div class="fn-d">Pass threshold at 50th percentile of top agents</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S4: Live Simulator -->
+  <div class="sec">
+    <div class="sec-t">Live Assessment Simulator</div>
+    <div class="sec-s">Experience the AI-powered scenario assessment — select a scenario and respond as the agent</div>
+    <div class="card">
+      <label style="font-size:13px;font-weight:700;color:var(--g700);display:block;margin-bottom:6px;">Select Call Scenario</label>
+      <select id="sim-sel" onchange="onScenarioChange()" style="margin-bottom:14px;">
+        <option value="">— Choose a call scenario —</option>
+        <option value="late-fee">Late Fee Dispute</option>
+        <option value="autopay">AutoPay Cancellation</option>
+        <option value="damaged">Damaged Device</option>
+        <option value="port-out">Port-Out Prevention</option>
+        <option value="network">Network Complaint</option>
+        <option value="bill-shock">Bill Shock</option>
+      </select>
+
+      <div id="sim-callout" style="display:none;" class="s-callout">
+        <div class="slbl">Customer Statement</div>
+        <div id="sim-txt" class="stxt"></div>
+      </div>
+
+      <textarea id="sim-resp" placeholder="Type your response as the agent..." style="margin-bottom:12px;"></textarea>
+      <button class="btn btn-pur" onclick="runAssessment()">Score My Response</button>
+
+      <div id="sim-result" style="display:none;margin-top:22px;" class="score-panel">
+        <div style="font-size:15px;font-weight:800;color:var(--g800);margin-bottom:14px;">Assessment Results</div>
+        <div id="sim-metrics"></div>
+        <div id="sim-badge" style="display:flex;align-items:center;gap:14px;margin:16px 0;"></div>
+        <div style="background:var(--blue-l);border-left:3px solid var(--blue);padding:13px;border-radius:8px;font-size:13px;color:var(--g700);">
+          <strong style="color:var(--blue);">AI Feedback:</strong> Strong empathy acknowledgment detected. Recommend leading with resolution before policy explanation. Benchmark agents resolve within 90 seconds on this intent type.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S5: New System Results -->
+  <div class="sec">
+    <div class="sec-t">AI Assessment System — Validation Results</div>
+    <div class="sec-s">Chi-Square analysis confirms strong predictive validity in new system</div>
+    <div class="card">
+      <table class="tbl">
+        <thead><tr><th>Band</th><th>Agents</th><th>Top Quartile</th><th>Bottom Quartile</th><th>Signal</th></tr></thead>
+        <tbody>
+          <tr style="background:var(--green-l);"><td style="font-weight:800;">Pass — above 50th %ile</td><td>67</td><td style="color:var(--green);font-weight:800;">78%</td><td style="color:var(--red);font-weight:700;">22%</td><td>✅ Strong</td></tr>
+          <tr style="background:var(--red-l);"><td style="font-weight:800;">Fail — below 50th %ile</td><td>31</td><td style="color:var(--green);font-weight:700;">24%</td><td style="color:var(--red);font-weight:800;">76%</td><td>✅ Strong</td></tr>
+        </tbody>
+      </table>
+      <div style="margin-top:14px;display:flex;justify-content:flex-end;">
+        <span class="badge b-grn" style="font-size:13px;padding:7px 18px;">p = 0.04 — Statistically Significant</span>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /pane-hiring -->
+
+
+<!-- ================================================================
+     TAB 2 — TRAINING PERFORMANCE
+     ================================================================ -->
+<div id="pane-training" class="pane">
+
+  <!-- S1: Improvement Summary -->
+  <div class="sec">
+    <div class="sec-t">Training Performance — Improvement Summary</div>
+    <div class="sec-s">AI-powered training versus legacy approach — four headline metrics</div>
+    <div class="g4">
+      <div class="card" style="border-left:4px solid var(--green);">
+        <div style="font-size:12px;font-weight:700;color:var(--g500);margin-bottom:8px;text-transform:uppercase;">Bottom-Quartile Ratio</div>
+        <div style="font-size:22px;font-weight:900;color:var(--green);margin-bottom:8px;">44% → 22%</div>
+        <span class="badge b-grn">50% improvement</span>
+      </div>
+      <div class="card" style="border-left:4px solid var(--green);">
+        <div style="font-size:12px;font-weight:700;color:var(--g500);margin-bottom:8px;text-transform:uppercase;">Graduation Failure</div>
+        <div style="font-size:22px;font-weight:900;color:var(--green);margin-bottom:8px;">30% → 11%</div>
+        <span class="badge b-grn">63% improvement</span>
+      </div>
+      <div class="card" style="border-left:4px solid var(--green);">
+        <div style="font-size:12px;font-weight:700;color:var(--g500);margin-bottom:8px;text-transform:uppercase;">Ramp Time</div>
+        <div style="font-size:22px;font-weight:900;color:var(--green);margin-bottom:8px;">16w → 8w</div>
+        <span class="badge b-grn">50% faster</span>
+      </div>
+      <div class="card" style="border-left:4px solid var(--green);">
+        <div style="font-size:12px;font-weight:700;color:var(--g500);margin-bottom:8px;text-transform:uppercase;">Unresolved Call Rate</div>
+        <div style="font-size:22px;font-weight:900;color:var(--green);margin-bottom:8px;">↓ 8–12pp</div>
+        <span class="badge b-grn">Measurable reduction</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- S2: Funnel Comparison -->
+  <div class="sec">
+    <div class="sec-t">Training Funnel Comparison</div>
+    <div class="sec-s">Legacy system cohort vs AI system new hire cohort</div>
+    <div class="g2">
+      <div class="card">
+        <div style="font-size:15px;font-weight:800;color:var(--g700);text-align:center;margin-bottom:20px;">Legacy System — 195 Agent Cohort</div>
+        <div class="funnel">
+          <div class="funnel-box" style="width:100%;background:var(--g100);border:2px solid var(--g300);color:var(--g700);">195 Enrolled</div>
+          <div class="funnel-dn">↓</div>
+          <div class="funnel-box" style="width:88%;background:var(--amber-l);border:2px solid var(--amber);color:#92400e;">136 Completed <strong>(70%)</strong></div>
+          <div class="funnel-dn">↓</div>
+          <div class="funnel-box" style="width:60%;background:var(--red-l);border:2px solid var(--red);color:var(--red);">59 Failed to Graduate <strong>(30%)</strong></div>
+        </div>
+      </div>
+      <div class="card">
+        <div style="font-size:15px;font-weight:800;color:var(--g700);text-align:center;margin-bottom:20px;">AI System — New Hire Cohort</div>
+        <div class="funnel">
+          <div class="funnel-box" style="width:100%;background:var(--g100);border:2px solid var(--g300);color:var(--g700);">Cohort Enrolled</div>
+          <div class="funnel-dn">↓</div>
+          <div class="funnel-box" style="width:90%;background:var(--green-l);border:2px solid var(--green);color:#166534;">89% Completed</div>
+          <div class="funnel-dn">↓</div>
+          <div class="funnel-box" style="width:33%;background:var(--amber-l);border:2px solid var(--amber);color:#92400e;">11% Failed <strong>(Amber)</strong></div>
+        </div>
+        <div style="text-align:center;margin-top:18px;">
+          <span class="badge b-grn" style="font-size:13px;padding:7px 16px;">63% improvement in graduation rates</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S3: Dynamic Training Module -->
+  <div class="sec">
+    <div class="sec-t">Dynamic Training Content Engine</div>
+    <div class="sec-s">Scenarios generated from real production call patterns — select an intent type to explore</div>
+    <div class="card">
+      <div class="pills">
+        <button class="pill on" onclick="switchTrain('late-fee',this)">Late Fee</button>
+        <button class="pill"    onclick="switchTrain('autopay',this)">AutoPay</button>
+        <button class="pill"    onclick="switchTrain('damaged',this)">Damaged Device</button>
+        <button class="pill"    onclick="switchTrain('port-out',this)">Port-Out</button>
+        <button class="pill"    onclick="switchTrain('network',this)">Network</button>
+        <button class="pill"    onclick="switchTrain('bill-shock',this)">Bill Shock</button>
+      </div>
+      <div id="train-content"></div>
+      <div style="border-top:1px solid var(--g200);margin-top:20px;padding-top:18px;">
+        <div style="font-size:14px;font-weight:700;color:var(--g700);margin-bottom:8px;">Practice Your Response</div>
+        <textarea id="train-resp" placeholder="Practice your response here..."></textarea>
+        <button class="btn btn-pur" style="margin-top:10px;" onclick="showTrainFeedback()">Get AI Feedback</button>
+      </div>
+      <div id="train-fb" style="display:none;margin-top:16px;" class="score-panel">
+        <div style="background:var(--green-l);border-left:3px solid var(--green);padding:12px;border-radius:8px;margin-bottom:8px;font-size:13px;">
+          <strong style="color:var(--green);">What worked:</strong> Clear acknowledgment of customer frustration. Offered resolution pathway early in the conversation.
+        </div>
+        <div style="background:var(--amber-l);border-left:3px solid var(--amber);padding:12px;border-radius:8px;margin-bottom:8px;font-size:13px;">
+          <strong style="color:var(--amber);">What to improve:</strong> Avoid leading with policy. Personalise using account history before presenting options.
+        </div>
+        <div style="background:var(--blue-l);border-left:3px solid var(--blue);padding:12px;border-radius:8px;font-size:13px;">
+          <strong style="color:var(--blue);">Benchmark insight:</strong> Top-quartile agents on this intent type resolve in under 90 seconds with one empathy statement and two solution options.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S4: Archetype Training Paths -->
+  <div class="sec">
+    <div class="sec-t">Agent Archetype Training Paths</div>
+    <div class="sec-s">Tailored development tracks based on identified customer interaction patterns</div>
+    <div class="g3">
+      <div class="card" style="border-left:4px solid var(--red);">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+          <div style="width:38px;height:38px;background:var(--red-l);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">😤</div>
+          <div><div style="font-size:15px;font-weight:800;">Onboarding Frustrated</div><span class="badge b-red">Empathy &amp; Process Speed</span></div>
+        </div>
+        <div style="font-size:13px;color:var(--g700);margin-bottom:10px;"><strong>Key skills:</strong> Active listening, rapid resolution, de-escalation</div>
+        <div style="font-size:13px;color:var(--g700);margin-bottom:12px;padding:8px;background:var(--red-l);border-radius:6px;"><strong>Top failure mode:</strong> Over-explaining policy before acknowledging frustration</div>
+        <div style="font-size:13px;color:var(--g700);padding:8px;background:var(--g50);border-radius:6px;">🎯 Target: under <strong>4 minutes</strong> resolution</div>
+      </div>
+      <div class="card" style="border-left:4px solid var(--amber);">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+          <div style="width:38px;height:38px;background:var(--amber-l);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">💰</div>
+          <div><div style="font-size:15px;font-weight:800;">Price Sensitive</div><span class="badge b-amb">Value Articulation</span></div>
+        </div>
+        <div style="font-size:13px;color:var(--g700);margin-bottom:10px;"><strong>Key skills:</strong> Competitive positioning, offer eligibility, savings calculation</div>
+        <div style="font-size:13px;color:var(--g700);margin-bottom:12px;padding:8px;background:var(--amber-l);border-radius:6px;"><strong>Top failure mode:</strong> Offering discounts without understanding real objection</div>
+        <div style="font-size:13px;color:var(--g700);padding:8px;background:var(--g50);border-radius:6px;">🎯 Target: under <strong>6 minutes</strong> resolution</div>
+      </div>
+      <div class="card" style="border-left:4px solid var(--blue);">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+          <div style="width:38px;height:38px;background:var(--blue-l);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">📡</div>
+          <div><div style="font-size:15px;font-weight:800;">Network Skeptic</div><span class="badge b-blu">Technical Resolution</span></div>
+        </div>
+        <div style="font-size:13px;color:var(--g700);margin-bottom:10px;"><strong>Key skills:</strong> Diagnostic questioning, ticket creation, expectation setting</div>
+        <div style="font-size:13px;color:var(--g700);margin-bottom:12px;padding:8px;background:var(--blue-l);border-radius:6px;"><strong>Top failure mode:</strong> Promising resolution timelines that cannot be met</div>
+        <div style="font-size:13px;color:var(--g700);padding:8px;background:var(--g50);border-radius:6px;">🎯 Target: under <strong>5 minutes</strong> resolution</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S5: Real-Time Agent Assist -->
+  <div class="sec">
+    <div class="sec-t">In-Call AI Assist — Real-Time Decision Support</div>
+    <div class="sec-s">AI surfaces next best action so agents focus on the customer</div>
+    <div class="g2">
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;">
+          <span class="ldot"></span>
+          <span style="font-size:14px;font-weight:800;color:var(--g700);">Live Call Transcript</span>
+        </div>
+        <div id="transcript-box" class="transcript-scroll"></div>
+      </div>
+      <div class="assist-dark">
+        <h4>AI Assist — Real-Time Analysis</h4>
+        <div id="assist-panel">
+          <div class="a-row"><div class="a-lbl">Status</div><div class="a-val">Waiting for call data…</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /pane-training -->
+
+
+<!-- ================================================================
+     TAB 3 — PERFORMANCE FEEDBACK LOOP
+     ================================================================ -->
+<div id="pane-feedback" class="pane">
+
+  <!-- S1: Closed Loop Visualization -->
+  <div class="sec">
+    <div class="sec-t">Closed Performance Feedback Loop</div>
+    <div class="sec-s">Hire score predicts training outcome which predicts production performance</div>
+    <div class="card" style="padding:36px 32px;">
+      <div class="loop-diagram">
+
+        <!-- Top row: PRE-HIRE → TRAINING → PRODUCTION -->
+        <div class="loop-top-row">
+          <div class="loop-node" style="background:var(--purple);">PRE-HIRE<br>ASSESSMENT<br>SCORE</div>
+          <div class="loop-h-arrow">
+            <span class="badge b-grn loop-corr">r = 0.71</span>
+            <div class="loop-h-line fwd"></div>
+          </div>
+          <div class="loop-node" style="background:var(--blue);">TRAINING<br>PERFORMANCE<br>SCORE</div>
+          <div class="loop-h-arrow">
+            <span class="badge b-grn loop-corr">r = 0.68</span>
+            <div class="loop-h-line fwd"></div>
+          </div>
+          <div class="loop-node" style="background:var(--green);">PRODUCTION<br>PERFORMANCE</div>
+        </div>
+
+        <!-- Vertical spacers with arrows -->
+        <div class="loop-verts">
+          <div class="loop-vert">
+            <div style="font-size:20px;color:var(--purple);line-height:1;">↑</div>
+            <div class="loop-vert-line" style="background:var(--purple);"></div>
+          </div>
+          <div class="loop-vert">
+            <div class="loop-vert-line" style="background:var(--green);"></div>
+            <div style="font-size:20px;color:var(--green);line-height:1;">↓</div>
+            <span class="badge b-grn" style="margin-top:6px;font-size:11px;">r = 0.74</span>
+          </div>
+        </div>
+
+        <!-- Bottom row: CALIBRATION ← CHURN (loop back) -->
+        <div class="loop-bot-row">
+          <div class="loop-node" style="background:var(--amber);">ASSESSMENT<br>CALIBRATION<br>UPDATE</div>
+          <div class="loop-h-arrow">
+            <div class="loop-h-line bwd"></div>
+          </div>
+          <div class="loop-node" style="background:var(--red);">CHURN<br>CORRELATION<br>BY COHORT</div>
+          <div style="flex:1;"></div>
+          <div style="width:148px;"></div>
+        </div>
+
+      </div>
+      <div style="text-align:center;margin-top:28px;">
+        <span class="badge b-pur" style="font-size:12px;padding:6px 18px;">Continuous improvement loop — every cohort refines the model</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- S2: Cohort Tracking -->
+  <div class="sec">
+    <div class="sec-t">Agent Cohort — Full Performance Tracking</div>
+    <div class="card">
+      <table class="tbl">
+        <thead>
+          <tr><th>Cohort</th><th>System</th><th>Hire Score</th><th>Training Score</th><th>Resolution %</th><th>Sentiment</th><th>Churn Risk</th></tr>
+        </thead>
+        <tbody>
+          <tr class="row-ai">
+            <td><strong>Cohort A</strong></td>
+            <td><span class="badge b-grn">AI System</span></td>
+            <td style="font-weight:700;">82nd %ile</td>
+            <td style="color:var(--green);font-weight:800;">78/100</td>
+            <td style="color:var(--green);font-weight:800;">87%</td>
+            <td><span class="badge b-grn">Positive</span></td>
+            <td>🟢 Low</td>
+          </tr>
+          <tr class="row-ai">
+            <td><strong>Cohort B</strong></td>
+            <td><span class="badge b-grn">AI System</span></td>
+            <td style="font-weight:700;">71st %ile</td>
+            <td style="color:var(--green);font-weight:800;">72/100</td>
+            <td style="color:var(--green);font-weight:800;">81%</td>
+            <td><span class="badge b-grn">Positive</span></td>
+            <td>🟢 Low</td>
+          </tr>
+          <tr class="row-leg">
+            <td><strong>Cohort C</strong></td>
+            <td><span class="badge b-amb">Legacy</span></td>
+            <td style="font-weight:700;">Top Band</td>
+            <td style="color:var(--amber);font-weight:800;">61/100</td>
+            <td style="color:var(--amber);font-weight:800;">64%</td>
+            <td><span class="badge b-amb">Neutral</span></td>
+            <td>🟡 Medium</td>
+          </tr>
+          <tr class="row-leg">
+            <td><strong>Cohort D</strong></td>
+            <td><span class="badge b-amb">Legacy</span></td>
+            <td style="font-weight:700;">Top Band</td>
+            <td style="color:var(--red);font-weight:800;">58/100</td>
+            <td style="color:var(--red);font-weight:800;">59%</td>
+            <td><span class="badge b-red">Negative</span></td>
+            <td>🔴 High</td>
+          </tr>
+          <tr class="row-ret">
+            <td><strong>Cohort E</strong></td>
+            <td><span class="badge b-pur">Retrained</span></td>
+            <td style="color:var(--g400);">N/A</td>
+            <td style="color:var(--amber);font-weight:800;">69/100</td>
+            <td style="color:var(--amber);font-weight:800;">71%</td>
+            <td><span class="badge b-grn">Positive</span></td>
+            <td>🟡 Medium</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- S3: Full Impact Table -->
+  <div class="sec">
+    <div class="sec-t">Performance Transformation — Before vs After</div>
+    <div class="card">
+      <table class="tbl">
+        <thead><tr><th>Metric</th><th>Before</th><th>After</th><th>Change</th></tr></thead>
+        <tbody>
+          <tr><td style="font-weight:700;">Assessment-to-production correlation</td><td class="td-b">p = 0.828</td><td class="td-a">p = 0.04</td><td>✅ Now predictive</td></tr>
+          <tr><td style="font-weight:700;">Bottom-quartile agent ratio</td><td class="td-b">44%</td><td class="td-a">22%</td><td>✅ 50% reduction</td></tr>
+          <tr><td style="font-weight:700;">Training graduation failure</td><td class="td-b">30%</td><td class="td-a">11%</td><td>✅ 63% improvement</td></tr>
+          <tr><td style="font-weight:700;">Unresolved call rate</td><td class="td-b">50–64%</td><td class="td-a">Reduced 8–12pp</td><td>✅ Measurable improvement</td></tr>
+          <tr><td style="font-weight:700;">Service interactions deflected</td><td class="td-b">Baseline</td><td class="td-a">600K+</td><td>✅ Achieved</td></tr>
+          <tr><td style="font-weight:700;">Hire-to-production ramp</td><td class="td-b">16 weeks</td><td class="td-a">Under 8 weeks</td><td>✅ 50% faster</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div><!-- /pane-feedback -->
+
+</div><!-- /main -->
+
+<footer class="footer">Built by Raymond Pius | AI Hiring and Training Intelligence Agent</footer>
+
+<!-- ================================================================
+     JAVASCRIPT
+     ================================================================ -->
+<script>
+/* ---- DATA ---- */
+const SIM_SCENARIOS = {
+  'late-fee':   'I was charged a $35 late fee but I set up autopay. I want this removed immediately or I am leaving.',
+  'autopay':    'I cancelled my autopay because my bill keeps changing. Now I am getting late fees. This needs to be fixed.',
+  'damaged':    'My phone stopped working after a software update. I need a replacement. I have been a customer for 6 years.',
+  'port-out':   'I am porting my number to a competitor today. Their plan is $30 cheaper and I am done with this service.',
+  'network':    'My data barely works. I have had network issues for 3 weeks and nobody has fixed it.',
+  'bill-shock': 'My bill is $47 higher than last month. Nobody told me about these charges. I want an explanation.'
+};
+
+const TRAIN_DATA = {
+  'late-fee': {
+    desc: 'Customer has been charged a late fee despite having set up autopay. They are frustrated and threatening to leave.',
+    emotion: 'Frustrated', ebadge: 'b-red',
+    signals: ['Mentions autopay setup — likely an account configuration error', 'Threatening to leave — immediate churn risk flagged', 'Tone: urgent and wronged — needs resolution, not explanation'],
+    steps: ['Acknowledge immediately: "That should not have happened — let me fix this right now"', 'Pull up autopay status and transaction history in real time', 'Waive the fee proactively and confirm autopay is reactivated before ending the call'],
+    mistake: 'Asking the customer to re-explain or leading with policy before apologising',
+    top: 'Top agents apologise within 10 seconds, confirm the error on screen, and waive the fee without being asked — resolution under 3 minutes.'
+  },
+  'autopay': {
+    desc: 'Customer cancelled autopay due to inconsistent billing and is now receiving late fees they want reversed.',
+    emotion: 'Confused', ebadge: 'b-amb',
+    signals: ['Billing variability concern — review recent charges line by line', 'Customer took proactive action (cancellation) — they feel justified', 'Late fees now layered on top — compounding frustration'],
+    steps: ['Validate: "Changing bills without explanation are confusing — that is on us"', 'Break down the bill to explain the variability (usage, promo expiry, plan change)', 'Offer autopay with a bill cap or move to a fixed plan to remove future uncertainty'],
+    mistake: 'Defending the billing structure before explaining it clearly',
+    top: 'Top agents break down the bill line-by-line in under 90 seconds and proactively offer a fixed monthly option — zero callbacks on this intent type.'
+  },
+  'damaged': {
+    desc: 'Long-tenure customer\'s phone stopped working after a software update. They are requesting a replacement device.',
+    emotion: 'Frustrated', ebadge: 'b-red',
+    signals: ['6-year tenure — loyalty must be explicitly acknowledged first', 'Software update link — may qualify for warranty or goodwill replacement', 'Replacement expectation already set — do not immediately deny or deflect'],
+    steps: ['Acknowledge loyalty: "Six years with us — that genuinely matters and we want to make this right"', 'Check warranty status and device protection eligibility in real time', 'Confirm replacement or escalate with same-day callback commitment'],
+    mistake: 'Jumping to cost or policy eligibility before acknowledging the customer\'s tenure',
+    top: 'Top agents affirm loyalty in the first sentence, run eligibility silently, and confirm the outcome before ending — zero follow-up contacts.'
+  },
+  'port-out': {
+    desc: 'Customer is actively porting their number to a competitor who offers a plan $30 per month cheaper.',
+    emotion: 'Resigned', ebadge: 'b-amb',
+    signals: ['Active port-out in progress — churn is imminent without immediate intervention', '"$30 cheaper" — a specific and addressable price gap', 'Resigned tone — the customer has decided and needs a reason to reverse it'],
+    steps: ['Acknowledge their decision calmly without being defensive or asking why', 'Present a specific counter-offer that matches or beats the $30 gap immediately', 'Create urgency: confirm savings apply today and walk through the comparison live'],
+    mistake: 'Asking why they want to leave instead of immediately presenting a matched retention offer',
+    top: 'Top agents skip discovery and lead with a matched offer within 30 seconds. Conversion rate on active port-outs: 38%.'
+  },
+  'network': {
+    desc: 'Customer has experienced unresolved network issues for 3 weeks and has already made prior contact without resolution.',
+    emotion: 'Angry', ebadge: 'b-red',
+    signals: ['Three-week duration — at minimum a second contact, trust is already damaged', 'Prior contacts went unresolved — do not ask them to repeat the history', '"Thinking about switching" — churn signal embedded in the complaint'],
+    steps: ['Acknowledge the failure directly: "Three weeks without resolution is not acceptable — I own this"', 'Run live network diagnostics and escalate to a priority engineering ticket immediately', 'Commit to a callback within 24 hours with a specific ticket reference — no vague timelines'],
+    mistake: 'Promising resolution timelines that cannot be guaranteed or running the same diagnostic as the last agent',
+    top: 'Top agents create a priority ticket live, read the number back, and schedule a proactive callback — no open loops when they disconnect.'
+  },
+  'bill-shock': {
+    desc: "Customer's bill is $47 higher than last month with no explanation or prior notification received.",
+    emotion: 'Confused', ebadge: 'b-amb',
+    signals: ['Specific amount ($47) — precise complaint that can be traced to a single charge', 'No notification received — this is a communication failure', 'Demanding explanation — this is an information need, not just an emotional one'],
+    steps: ['Pull up the bill comparison immediately: last month vs current — do not ask them to describe it', 'Identify the exact line item causing the $47 increase and name it clearly', 'Offer a one-time credit if the increase was not communicated in advance — own the process failure'],
+    mistake: 'Reading out line items without explaining what caused the increase in plain language',
+    top: 'Top agents identify the root cause in under 60 seconds and offer a credit before the customer asks — first call resolution: 91%.'
+  }
+};
+
+const TRANSCRIPT_MSGS = [
+  { time:'0:08', speaker:'Customer', text:'I am having terrible network issues. My data barely works.',            cls:'msg-c' },
+  { time:'0:15', speaker:'Agent',    text:'I understand. Let me pull up your account right away.',                 cls:'msg-a' },
+  { time:'0:22', speaker:'Customer', text:'This has been going on for weeks. I am thinking about switching.',      cls:'msg-c' },
+  { time:'0:31', speaker:'Customer', text:'I already looked at a competitor. Their network is better in my area.', cls:'msg-c' },
+  { time:'0:45', speaker:'Customer', text:'If this is not fixed today I am cancelling.',                          cls:'msg-c' }
+];
+
+const ASSIST_STATES = [
+  [ // after msg 0
+    { lbl:'DETECTED INTENT',    val:'Network Complaint',                     cls:'' },
+    { lbl:'ARCHETYPE FORMING',  val:'Network Skeptic',                       cls:'' },
+    { lbl:'RECOMMENDED ACTION', val:'⚙️ Pull live diagnostics immediately',  cls:'' },
+    { lbl:'CHURN SIGNAL',       val:'Not yet detected',                      cls:'' }
+  ],
+  null, // agent message — no update
+  [ // after msg 2
+    { lbl:'DETECTED INTENT',    val:'Network Complaint + Churn Signal',          cls:'' },
+    { lbl:'ARCHETYPE',          val:'⚠️ Network Skeptic — Confirmed',            cls:'warn' },
+    { lbl:'CHURN RISK',         val:'67%',                                       cls:'warn' },
+    { lbl:'RECOMMENDED ACTION', val:'Acknowledge + escalate to priority ticket', cls:'' }
+  ],
+  [ // after msg 3
+    { lbl:'DETECTED INTENT',    val:'Competitive Comparison',                             cls:'' },
+    { lbl:'CHURN RISK',         val:'84%',                                                cls:'warn' },
+    { lbl:'RECOMMENDED ACTION', val:'Retention package + priority network ticket',        cls:'' },
+    { lbl:'SCRIPT SUGGESTION',  val:'"Let me escalate this to our network priority team."', cls:'' }
+  ],
+  [ // after msg 4
+    { lbl:'🚨 CRITICAL',        val:'91% Churn Risk',                                                       cls:'crit' },
+    { lbl:'RECOMMENDED ACTION', val:'Manager callback + Emergency loyalty offer',                            cls:'crit' },
+    { lbl:'SCRIPT SUGGESTION',  val:'"Connecting you to our priority team — resolved today."',               cls:'' },
+    { lbl:'LOYALTY OFFER',      val:'Eligible: 3-month discount + network priority tag',                    cls:'' }
+  ]
+];
+
+/* ---- STATE ---- */
+let txTimer  = null;
+let txIdx    = 0;
+let trainKey = 'late-fee';
+
+/* ---- switchTab ---- */
+function switchTab(name, btn) {
+  document.querySelectorAll('.tb').forEach(b => b.classList.remove('on'));
+  document.querySelectorAll('.pane').forEach(p => p.classList.remove('on'));
+  btn.classList.add('on');
+  document.getElementById('pane-' + name).classList.add('on');
+
+  if (name === 'training') {
+    renderTrainContent(trainKey);
+    startTranscript();
+  } else {
+    stopTranscript();
+  }
+}
+
+/* ---- onScenarioChange ---- */
+function onScenarioChange() {
+  const val = document.getElementById('sim-sel').value;
+  document.getElementById('sim-result').style.display = 'none';
+  document.getElementById('sim-resp').value = '';
+  if (val && SIM_SCENARIOS[val]) {
+    document.getElementById('sim-txt').textContent = '“' + SIM_SCENARIOS[val] + '”';
+    document.getElementById('sim-callout').style.display = 'block';
+  } else {
+    document.getElementById('sim-callout').style.display = 'none';
+  }
+}
+
+/* ---- runAssessment ---- */
+function runAssessment() {
+  const scenario = document.getElementById('sim-sel').value;
+  const response = document.getElementById('sim-resp').value.trim();
+  if (!scenario) { alert('Please select a call scenario first.'); return; }
+  if (!response) { alert('Please type a response before scoring.'); return; }
+
+  const METRICS = [
+    { label:'Resolution Quality',    score: ri(6,9) },
+    { label:'Empathy Signals',       score: ri(6,9) },
+    { label:'Process Adherence',     score: ri(7,9) },
+    { label:'Churn Risk Mitigation', score: ri(6,9) }
+  ];
+  const pct  = ri(65, 85);
+  const pass = pct >= 50;
+
+  document.getElementById('sim-metrics').innerHTML = METRICS.map(m => `
+    <div class="pb-wrap">
+      <div class="pb-row"><span>${m.label}</span><span class="pb-score">${m.score}/10</span></div>
+      <div class="pb-bg"><div class="pb-fill" data-w="${m.score * 10}"></div></div>
+    </div>`).join('');
+
+  document.getElementById('sim-badge').innerHTML = `
+    <span class="badge ${pass ? 'b-grn' : 'b-red'}" style="font-size:15px;padding:8px 20px;">${pass ? '✅ PASS' : '❌ BELOW THRESHOLD'}</span>
+    <span style="font-size:24px;font-weight:900;color:var(--purple);">${pct}th Percentile</span>`;
+
+  const panel = document.getElementById('sim-result');
+  panel.style.display = 'block';
+  setTimeout(() => panel.querySelectorAll('.pb-fill').forEach(b => { b.style.width = b.dataset.w + '%'; }), 60);
+  panel.scrollIntoView({ behavior:'smooth', block:'nearest' });
+}
+
+/* ---- switchTrain ---- */
+function switchTrain(key, btn) {
+  document.querySelectorAll('.pill').forEach(p => p.classList.remove('on'));
+  btn.classList.add('on');
+  trainKey = key;
+  renderTrainContent(key);
+  document.getElementById('train-fb').style.display = 'none';
+  document.getElementById('train-resp').value = '';
+}
+
+/* ---- renderTrainContent ---- */
+function renderTrainContent(key) {
+  const s = TRAIN_DATA[key];
+  if (!s) return;
+  document.getElementById('train-content').innerHTML = `
+    <div style="background:var(--g50);border-radius:10px;padding:20px;">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:18px;">
+        <div style="font-size:14px;color:var(--g700);flex:1;line-height:1.6;">${s.desc}</div>
+        <span class="badge ${s.ebadge}" style="white-space:nowrap;font-size:12px;padding:5px 12px;">😤 ${s.emotion}</span>
+      </div>
+      <div class="g3" style="gap:16px;">
+        <div>
+          <div style="font-size:11px;font-weight:800;color:var(--g500);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;">Key Signals to Detect</div>
+          ${s.signals.map(x => `<div style="font-size:13px;color:var(--g700);margin-bottom:7px;padding-left:10px;border-left:2px solid var(--purple);">${x}</div>`).join('')}
+        </div>
+        <div>
+          <div style="font-size:11px;font-weight:800;color:var(--g500);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;">Response Framework</div>
+          ${s.steps.map((f,i) => `<div style="font-size:13px;color:var(--g700);margin-bottom:7px;"><strong style="color:var(--purple);">${i+1}.</strong> ${f}</div>`).join('')}
+        </div>
+        <div>
+          <div style="font-size:11px;font-weight:800;color:var(--g500);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;">Top Quartile Difference</div>
+          <div style="font-size:13px;color:var(--g700);margin-bottom:10px;padding:9px;background:var(--red-l);border-radius:7px;"><strong>Common mistake:</strong> ${s.mistake}</div>
+          <div style="font-size:13px;color:var(--g700);padding:9px;background:var(--green-l);border-radius:7px;">${s.top}</div>
+        </div>
+      </div>
+    </div>`;
+}
+
+/* ---- showTrainFeedback ---- */
+function showTrainFeedback() {
+  if (!document.getElementById('train-resp').value.trim()) { alert('Please type a practice response first.'); return; }
+  const fb = document.getElementById('train-fb');
+  fb.style.display = 'block';
+  fb.scrollIntoView({ behavior:'smooth', block:'nearest' });
+}
+
+/* ---- animateTranscript / startTranscript ---- */
+function startTranscript() {
+  stopTranscript();
+  const box = document.getElementById('transcript-box');
+  const ap  = document.getElementById('assist-panel');
+  if (!box || !ap) return;
+
+  box.innerHTML = '';
+  txIdx = 0;
+  ap.innerHTML = '<div class="a-row"><div class="a-lbl">Status</div><div class="a-val">Waiting for call data…</div></div>';
+
+  setTimeout(() => {
+    txTimer = setInterval(() => {
+      if (txIdx >= TRANSCRIPT_MSGS.length) { stopTranscript(); return; }
+      const m  = TRANSCRIPT_MSGS[txIdx];
+      const el = document.createElement('div');
+      el.className = 'msg';
+      el.innerHTML = `<div class="msg-bub ${m.cls}">
+        <div class="msg-sender" style="color:${m.cls==='msg-c'?'var(--red)':'var(--purple)'};">${m.speaker} <span style="color:var(--g400);font-weight:400;">${m.time}</span></div>
+        “${m.text}”</div>`;
+      box.appendChild(el);
+      box.scrollTop = box.scrollHeight;
+      const state = ASSIST_STATES[txIdx];
+      if (state) renderAssist(state);
+      txIdx++;
+    }, 3000);
+  }, 600);
+}
+
+function stopTranscript() {
+  if (txTimer) { clearInterval(txTimer); txTimer = null; }
+}
+
+/* ---- renderAssist ---- */
+function renderAssist(rows) {
+  document.getElementById('assist-panel').innerHTML = rows.map(r =>
+    `<div class="a-row"><div class="a-lbl">${r.lbl}</div><div class="a-val ${r.cls}">${r.val}</div></div>`
+  ).join('');
+}
+
+/* ---- ri — random integer ---- */
+function ri(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+
+/* ---- INIT ---- */
+document.addEventListener('DOMContentLoaded', () => {
+  renderTrainContent('late-fee');
+});
+</script>
+</body>
+</html>
