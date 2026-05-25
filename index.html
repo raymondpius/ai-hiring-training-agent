@@ -3,8 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Hiring and Training Intelligence Agent</title>
+<title>AI Hiring and Training Intelligence Platform</title>
 <style>
+/* ============================================================
+   RESET & VARIABLES
+   ============================================================ */
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
 :root{
   --purple:#7c3aed;--purple-l:#ede9fe;--purple-d:#5b21b6;
@@ -12,797 +15,1585 @@
   --red:#dc2626;--red-l:#fee2e2;
   --amber:#d97706;--amber-l:#fef3c7;
   --blue:#2563eb;--blue-l:#dbeafe;
+  --charcoal:#1a1a2e;
+  --sidebar-bg:#f8f9fa;
   --g50:#f9fafb;--g100:#f3f4f6;--g200:#e5e7eb;--g300:#d1d5db;
-  --g400:#9ca3af;--g500:#6b7280;--g700:#374151;--g800:#1f2937;--g900:#111827;
+  --g400:#9ca3af;--g500:#6b7280;--g600:#4b5563;--g700:#374151;
+  --g800:#1f2937;--g900:#111827;
+  --shadow:0 2px 8px rgba(0,0,0,.08);
+  --radius:12px;
 }
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--g50);color:var(--g900);line-height:1.5;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--g50);color:var(--g900);display:flex;height:100vh;overflow:hidden;font-size:14px;}
 
-/* ACCENT */
-.accent{height:4px;background:linear-gradient(90deg,var(--purple-d),var(--purple),#a855f7);}
+/* ============================================================
+   LAYOUT
+   ============================================================ */
+.sidebar{width:220px;background:var(--sidebar-bg);border-right:1px solid var(--g200);display:flex;flex-direction:column;flex-shrink:0;height:100vh;overflow-y:auto;}
+.main-area{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;}
+.top-bar{height:60px;background:#fff;border-bottom:1px solid var(--g200);display:flex;align-items:center;justify-content:space-between;padding:0 24px;flex-shrink:0;box-shadow:0 1px 4px rgba(0,0,0,.06);}
+.content-area{flex:1;overflow-y:auto;padding:24px;}
 
-/* HEADER */
-.hdr{background:#fff;padding:20px 32px 0;border-bottom:1px solid var(--g200);box-shadow:0 1px 4px rgba(0,0,0,.06);}
-.hdr-row{display:flex;align-items:center;gap:14px;margin-bottom:20px;}
-.logo{width:44px;height:44px;background:var(--purple);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
-.hdr-t{font-size:20px;font-weight:800;color:var(--g900);}
-.hdr-s{font-size:13px;color:var(--g500);margin-top:1px;}
+/* ============================================================
+   SIDEBAR
+   ============================================================ */
+.sb-brand{padding:18px 16px;border-bottom:1px solid var(--g200);}
+.sb-logo{width:38px;height:38px;background:var(--purple);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:8px;}
+.sb-name{font-size:12px;font-weight:800;color:var(--charcoal);line-height:1.3;}
+.sb-sub{font-size:10px;color:var(--g400);margin-top:1px;}
+.sb-nav{padding:10px 8px;flex:1;}
+.nav-btn{display:flex;align-items:center;gap:10px;width:100%;padding:10px 12px;background:none;border:none;border-radius:8px;cursor:pointer;text-align:left;transition:all .2s;margin-bottom:2px;color:var(--g600);}
+.nav-btn:hover{background:var(--purple-l);color:var(--purple);}
+.nav-btn.on{background:var(--purple);color:#fff;}
+.nav-icon{font-size:16px;flex-shrink:0;width:20px;text-align:center;}
+.nav-label{font-size:12px;font-weight:600;line-height:1.3;}
+.sb-footer{padding:14px 16px;border-top:1px solid var(--g200);font-size:10px;color:var(--g400);line-height:1.5;}
 
-/* KPI */
-.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;padding-bottom:20px;}
-.kpi{background:#fff;border:1px solid var(--g200);border-radius:10px;padding:14px 18px;transition:box-shadow .2s;}
-.kpi:hover{box-shadow:0 4px 12px rgba(0,0,0,.08);}
-.kpi-lbl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--g500);margin-bottom:6px;}
-.kpi-val{font-size:26px;font-weight:900;margin-bottom:3px;}
-.kpi-sub{font-size:12px;color:var(--g500);}
-.kpi-val.red{color:var(--red);}.kpi-val.grn{color:var(--green);}
+/* ============================================================
+   TOP BAR
+   ============================================================ */
+.h-title{font-size:15px;font-weight:800;color:var(--charcoal);}
+.h-sub{font-size:11px;color:var(--g500);}
+.hdr-right{display:flex;align-items:center;gap:16px;}
+.h-date{font-size:12px;color:var(--g500);}
+.alert-btn{position:relative;background:none;border:1px solid var(--g200);border-radius:8px;font-size:18px;cursor:pointer;padding:5px 10px;display:flex;align-items:center;}
+.alert-dot{position:absolute;top:-6px;right:-6px;width:18px;height:18px;background:var(--red);border-radius:50%;font-size:10px;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;border:2px solid #fff;}
+.user-av{width:32px;height:32px;background:var(--purple);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;cursor:pointer;}
+.user-label{font-size:12px;font-weight:600;color:var(--g600);}
 
-/* TABS */
-.tabbar{background:#fff;border-bottom:1px solid var(--g200);padding:0 32px;position:sticky;top:0;z-index:100;box-shadow:0 2px 4px rgba(0,0,0,.04);}
-.tabbar nav{display:flex;}
-.tb{padding:15px 22px;background:none;border:none;border-bottom:3px solid transparent;font-size:14px;font-weight:600;color:var(--g500);cursor:pointer;transition:all .2s;white-space:nowrap;}
-.tb:hover{color:var(--purple);}
-.tb.on{color:var(--purple);border-bottom-color:var(--purple);}
-
-/* MAIN */
-.main{max-width:1440px;margin:0 auto;padding:28px 32px;}
-.pane{display:none;animation:fadeUp .3s ease;}
-.pane.on{display:block;}
+/* ============================================================
+   MODULES
+   ============================================================ */
+.module{display:none;animation:fadeUp .3s ease;}
+.module.on{display:block;}
 @keyframes fadeUp{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
 
-/* SECTION */
-.sec{margin-bottom:28px;}
-.sec-t{font-size:17px;font-weight:800;color:var(--g900);}
-.sec-s{font-size:13px;color:var(--g500);margin-top:2px;margin-bottom:16px;}
+/* ============================================================
+   SECTION HEADERS
+   ============================================================ */
+.sec-h{font-size:15px;font-weight:800;color:var(--charcoal);margin-bottom:12px;margin-top:24px;}
+.sec-h:first-child{margin-top:0;}
+.sec-s{font-size:12px;color:var(--g500);margin-bottom:14px;margin-top:-8px;}
+.mod-title{font-size:20px;font-weight:900;color:var(--charcoal);margin-bottom:4px;}
+.mod-sub{font-size:13px;color:var(--g500);margin-bottom:20px;}
 
-/* CARD */
-.card{background:#fff;border:1px solid var(--g200);border-radius:12px;padding:20px;}
-
-/* GRIDS */
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
-.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;}
+/* ============================================================
+   CARDS & GRIDS
+   ============================================================ */
+.card{background:#fff;border:1px solid var(--g200);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;}
 .g4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+.g5{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;}
+.mb-12{margin-bottom:12px;}.mb-16{margin-bottom:16px;}.mb-20{margin-bottom:20px;}.mb-24{margin-bottom:24px;}
 
-/* TABLE */
-.tbl{width:100%;border-collapse:collapse;}
-.tbl th{background:var(--g50);padding:9px 13px;text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--g500);border-bottom:1px solid var(--g200);}
-.tbl td{padding:11px 13px;font-size:13px;border-bottom:1px solid var(--g100);color:var(--g700);}
-.tbl tr:last-child td{border-bottom:none;}
+/* ============================================================
+   KPI ROW (8 cards)
+   ============================================================ */
+.kpi-row{display:grid;grid-template-columns:repeat(8,1fr);gap:10px;margin-bottom:20px;}
+.kpi{background:#fff;border:1px solid var(--g200);border-radius:var(--radius);padding:13px;box-shadow:var(--shadow);}
+.kpi-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--g500);margin-bottom:5px;line-height:1.3;}
+.kpi-val{font-size:20px;font-weight:900;margin-bottom:2px;}
+.kpi-sub{font-size:10px;color:var(--g500);line-height:1.3;}
+.kpi-val.grn{color:var(--green);}.kpi-val.red{color:var(--red);}.kpi-val.amb{color:var(--amber);}
 
-/* BADGES */
-.badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;}
-.b-red{background:var(--red-l);color:var(--red);}
+/* ============================================================
+   RISK CARDS
+   ============================================================ */
+.risk-card{border-radius:var(--radius);padding:16px;text-align:center;}
+.r-red{background:var(--red-l);border:1px solid #fca5a5;}
+.r-amb{background:var(--amber-l);border:1px solid #fcd34d;}
+.risk-num{font-size:36px;font-weight:900;margin-bottom:4px;}
+.r-red .risk-num{color:var(--red);}.r-amb .risk-num{color:var(--amber);}
+.risk-lbl{font-size:12px;font-weight:700;}
+.r-red .risk-lbl{color:#991b1b;}.r-amb .risk-lbl{color:#92400e;}
+
+/* ============================================================
+   INSIGHT PANEL
+   ============================================================ */
+.insight-panel{background:#fff;border:1px solid var(--g200);border-left:4px solid var(--purple);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);}
+.insight-ttl{font-size:12px;font-weight:800;color:var(--purple);text-transform:uppercase;letter-spacing:.5px;margin-bottom:14px;}
+.insight-item{display:flex;align-items:flex-start;gap:10px;padding:10px;background:var(--g50);border-radius:8px;margin-bottom:8px;}
+.insight-item:last-child{margin-bottom:0;}
+.insight-ico{font-size:16px;flex-shrink:0;}
+.insight-body{flex:1;}
+.insight-txt{font-size:13px;color:var(--g700);line-height:1.5;}
+.insight-trend{font-size:11px;font-weight:700;margin-top:3px;}
+.t-up{color:var(--green);}.t-warn{color:var(--amber);}.t-ok{color:var(--green);}
+
+/* ============================================================
+   ACTION CARDS
+   ============================================================ */
+.action-card{border-radius:var(--radius);padding:14px;background:#fff;border:1px solid var(--g200);box-shadow:var(--shadow);margin-bottom:12px;}
+.action-card:last-child{margin-bottom:0;}
+.action-card.a-amb{border-left:4px solid var(--amber);}
+.action-card.a-red{border-left:4px solid var(--red);}
+.action-card.a-grn{border-left:4px solid var(--green);}
+.act-sev{font-size:13px;font-weight:800;margin-bottom:5px;}
+.act-rec{font-size:12px;color:var(--g600);margin-bottom:3px;}
+.act-imp{font-size:12px;color:var(--g400);margin-bottom:10px;}
+.act-imp strong{color:var(--green);}
+
+/* ============================================================
+   CHANGE CARDS
+   ============================================================ */
+.change-card{background:#fff;border:1px solid var(--g200);border-radius:var(--radius);padding:14px;box-shadow:var(--shadow);display:flex;align-items:center;gap:12px;}
+.ch-arrow{font-size:22px;}
+.ch-lbl{font-size:11px;color:var(--g500);margin-bottom:3px;}
+.ch-vals{font-size:14px;font-weight:700;color:var(--g900);}
+.ch-ind{font-size:11px;font-weight:700;color:var(--green);}
+
+/* ============================================================
+   BADGES
+   ============================================================ */
+.badge{display:inline-flex;align-items:center;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700;}
 .b-grn{background:var(--green-l);color:var(--green);}
+.b-red{background:var(--red-l);color:var(--red);}
 .b-amb{background:var(--amber-l);color:var(--amber);}
 .b-pur{background:var(--purple-l);color:var(--purple);}
 .b-blu{background:var(--blue-l);color:var(--blue);}
+.b-gry{background:var(--g100);color:var(--g600);}
 
-/* BUTTON */
-.btn{display:inline-flex;align-items:center;justify-content:center;padding:10px 22px;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;transition:all .2s;}
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+.btn{display:inline-flex;align-items:center;justify-content:center;padding:8px 18px;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;font-family:inherit;}
 .btn-pur{background:var(--purple);color:#fff;}
-.btn-pur:hover{background:var(--purple-d);box-shadow:0 4px 14px rgba(124,58,237,.35);transform:translateY(-1px);}
+.btn-pur:hover{background:var(--purple-d);box-shadow:0 4px 12px rgba(124,58,237,.3);transform:translateY(-1px);}
+.btn-red{background:var(--red);color:#fff;}
+.btn-red:hover{background:#b91c1c;}
+.btn-grn{background:var(--green);color:#fff;}
+.btn-grn:hover{background:#15803d;}
+.btn-amb{background:var(--amber);color:#fff;}
+.btn-amb:hover{background:#b45309;}
+.btn-out{background:transparent;color:var(--purple);border:2px solid var(--purple);}
+.btn-out:hover{background:var(--purple-l);}
+.btn-sm{padding:6px 13px;font-size:12px;}
+.btn-lg{padding:12px 28px;font-size:15px;}
 
-/* FORM */
-select,textarea{width:100%;padding:10px 13px;border:1px solid var(--g300);border-radius:8px;font-size:14px;color:var(--g700);background:#fff;font-family:inherit;outline:none;transition:border-color .2s,box-shadow .2s;}
+/* ============================================================
+   TABLES
+   ============================================================ */
+.tbl-wrap{overflow-x:auto;}
+.tbl{width:100%;border-collapse:collapse;}
+.tbl th{background:var(--g50);padding:9px 12px;text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--g500);border-bottom:1px solid var(--g200);white-space:nowrap;}
+.tbl td{padding:10px 12px;font-size:13px;border-bottom:1px solid var(--g100);color:var(--g700);vertical-align:middle;}
+.tbl tr:last-child td{border-bottom:none;}
+.tbl tr:hover td{background:var(--g50);}
+
+/* ============================================================
+   FORM ELEMENTS
+   ============================================================ */
+select,textarea{font-family:inherit;font-size:13px;border:1px solid var(--g300);border-radius:8px;padding:8px 12px;background:#fff;color:var(--g700);outline:none;transition:border-color .2s,box-shadow .2s;}
 select:focus,textarea:focus{border-color:var(--purple);box-shadow:0 0 0 3px rgba(124,58,237,.1);}
-textarea{resize:vertical;min-height:90px;}
+textarea{resize:vertical;min-height:100px;width:100%;}
+select{cursor:pointer;}
 
-/* PROGRESS */
-.pb-wrap{margin-bottom:12px;}
-.pb-row{display:flex;justify-content:space-between;font-size:13px;color:var(--g700);margin-bottom:4px;}
-.pb-score{font-weight:800;color:var(--purple);}
-.pb-bg{height:8px;background:var(--g100);border-radius:4px;overflow:hidden;}
-.pb-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--purple),#a855f7);width:0;transition:width .9s cubic-bezier(.4,0,.2,1);}
+/* ============================================================
+   PROGRESS BARS
+   ============================================================ */
+.pb-wrap{margin-bottom:10px;}
+.pb-row{display:flex;justify-content:space-between;font-size:12px;color:var(--g700);margin-bottom:4px;}
+.pb-score{font-weight:800;}
+.pb-bg{height:7px;background:var(--g100);border-radius:4px;overflow:hidden;}
+.pb-fill{height:100%;border-radius:4px;width:0;transition:width .9s cubic-bezier(.4,0,.2,1);}
+.pb-pur{background:linear-gradient(90deg,var(--purple),#a855f7);}
+.pb-grn{background:var(--green);}
+.pb-red{background:var(--red);}
+.pb-amb{background:var(--amber);}
 
-/* RING STAT */
-.ring{width:130px;height:130px;border-radius:50%;border:7px solid var(--red-l);display:flex;flex-direction:column;align-items:center;justify-content:center;margin:16px auto;}
-.ring-v{font-size:32px;font-weight:900;color:var(--red);}
-.ring-s{font-size:10px;color:var(--red);font-weight:600;text-align:center;}
+/* ============================================================
+   FUNNEL
+   ============================================================ */
+.funnel-row{display:flex;align-items:flex-end;gap:4px;padding:10px 0;}
+.funnel-stage{display:flex;flex-direction:column;align-items:center;flex:1;min-width:72px;}
+.funnel-bar-wrap{width:100%;height:60px;display:flex;align-items:flex-end;}
+.funnel-bar{width:100%;background:var(--purple);border-radius:4px 4px 0 0;cursor:pointer;transition:opacity .2s;}
+.funnel-bar:hover{opacity:.8;}
+.funnel-sname{font-size:10px;font-weight:700;color:var(--g700);margin-top:6px;text-align:center;}
+.funnel-cnt{font-size:16px;font-weight:900;color:var(--charcoal);text-align:center;}
+.funnel-rate{font-size:10px;color:var(--g500);text-align:center;}
+.funnel-arr{font-size:18px;color:var(--g400);flex-shrink:0;align-self:center;padding-bottom:36px;}
 
-/* FLOW STEPS */
-.flow-wrap{display:flex;align-items:center;overflow-x:auto;padding:8px 0;}
-.fn-box{flex:1;min-width:110px;text-align:center;}
-.fn-bub{width:54px;height:54px;border-radius:50%;background:var(--purple);color:#fff;font-size:20px;font-weight:900;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;box-shadow:0 4px 14px rgba(124,58,237,.3);}
-.fn-t{font-size:13px;font-weight:800;color:var(--g800);margin-bottom:3px;}
-.fn-d{font-size:11px;color:var(--g500);line-height:1.4;}
-.fa{flex-shrink:0;padding:0 6px;margin-top:-28px;}
-.fa-line{width:36px;height:2px;background:linear-gradient(90deg,var(--purple),#a855f7);position:relative;}
-.fa-line::after{content:'';position:absolute;right:-5px;top:-4px;border:5px solid transparent;border-left-color:#a855f7;}
+/* ============================================================
+   SKILL HEATMAP
+   ============================================================ */
+.heatmap-wrap{overflow-x:auto;}
+.hm-grid{display:grid;gap:3px;min-width:650px;}
+.hm-hdr,.hm-agent{font-size:11px;font-weight:700;color:var(--g500);padding:6px;display:flex;align-items:center;}
+.hm-agent{font-weight:600;color:var(--g700);}
+.hm-cell{padding:7px 4px;border-radius:5px;font-size:11px;font-weight:700;text-align:center;cursor:pointer;transition:opacity .2s;}
+.hm-cell:hover{opacity:.8;}
+.hm-hi{background:var(--green-l);color:var(--green);}
+.hm-md{background:var(--amber-l);color:var(--amber);}
+.hm-lo{background:var(--red-l);color:var(--red);}
 
-/* FUNNEL */
-.funnel{display:flex;flex-direction:column;align-items:center;gap:6px;}
-.funnel-box{padding:12px 16px;border-radius:8px;text-align:center;font-size:14px;font-weight:700;}
-.funnel-dn{font-size:22px;color:var(--g400);line-height:1;}
+/* ============================================================
+   AGENT COACHING CARDS
+   ============================================================ */
+.agent-card{background:#fff;border:1px solid var(--g200);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);}
+.agent-card.ac-red{border-top:4px solid var(--red);}
+.agent-card.ac-amb{border-top:4px solid var(--amber);}
+.agent-card.ac-grn{border-top:4px solid var(--green);}
+.ag-hdr{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+.ag-av{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;flex-shrink:0;}
+.av-red{background:var(--red);}.av-amb{background:var(--amber);}.av-grn{background:var(--green);}
+.ag-name{font-size:14px;font-weight:800;color:var(--charcoal);}
+.ai-rec-box{background:var(--purple-l);border-left:3px solid var(--purple);border-radius:7px;padding:9px;margin:10px 0;font-size:12px;color:var(--g700);}
+.ai-rec-lbl{font-size:10px;font-weight:800;color:var(--purple);text-transform:uppercase;margin-bottom:3px;}
 
-/* PILL TABS */
-.pills{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px;}
-.pill{padding:5px 16px;border:1px solid var(--g300);border-radius:20px;background:none;font-size:13px;font-weight:600;color:var(--g500);cursor:pointer;transition:all .2s;}
-.pill.on{background:var(--purple);color:#fff;border-color:var(--purple);}
-.pill:hover:not(.on){border-color:var(--purple);color:var(--purple);}
+/* ============================================================
+   PROBATION CARDS
+   ============================================================ */
+.prob-card{background:#fff;border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);}
+.prob-card.pc-red{border:2px solid var(--red);}
+.prob-card.pc-amb{border:2px solid var(--amber);}
+.prob-card.pc-grn{border:2px solid var(--green);}
+.prob-hdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;}
+.prob-risk-chip{padding:4px 12px;border-radius:20px;font-size:11px;font-weight:800;}
+.prc-high{background:var(--red-l);color:var(--red);}
+.prc-med{background:var(--amber-l);color:var(--amber);}
+.prc-low{background:var(--green-l);color:var(--green);}
+.prob-tl{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;}
+.prob-week{display:flex;flex-direction:column;align-items:center;gap:4px;}
+.prob-dot{width:22px;height:22px;border-radius:50%;border:2px solid;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;}
+.d-grn{background:var(--green-l);border-color:var(--green);color:var(--green);}
+.d-amb{background:var(--amber-l);border-color:var(--amber);color:var(--amber);}
+.d-red{background:var(--red-l);border-color:var(--red);color:var(--red);}
+.d-emp{background:var(--g100);border-color:var(--g300);color:var(--g400);}
+.prob-wlbl{font-size:9px;color:var(--g400);}
+.prob-m{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--g100);font-size:12px;}
+.prob-m:last-of-type{border-bottom:none;}
+.prob-mlbl{color:var(--g500);}
+.prob-mval{font-weight:700;}
+.prob-act{margin-top:14px;border-radius:8px;padding:10px 12px;font-size:12px;}
+.pact-red{background:var(--red-l);color:#991b1b;}
+.pact-amb{background:var(--amber-l);color:#92400e;}
+.pact-grn{background:var(--green-l);color:#166534;}
+.pact-title{font-weight:800;margin-bottom:4px;}
 
-/* TRANSCRIPT */
-.transcript-scroll{background:var(--g50);border-radius:10px;padding:14px;min-height:220px;max-height:320px;overflow-y:auto;}
-.msg{margin-bottom:10px;animation:msgIn .35s ease;}
-@keyframes msgIn{from{opacity:0;transform:translateX(-8px);}to{opacity:1;transform:translateX(0);}}
-.msg-bub{padding:9px 13px;border-radius:8px;font-size:13px;color:var(--g700);}
-.msg-c{border-left:3px solid var(--red);background:#fff;}
-.msg-a{border-left:3px solid var(--purple);background:var(--purple-l);}
-.msg-sender{font-size:10px;font-weight:800;margin-bottom:3px;text-transform:uppercase;letter-spacing:.5px;}
+/* ============================================================
+   MODAL
+   ============================================================ */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000;align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;animation:fadeUp .2s ease;}
+.modal-card{background:#fff;border-radius:16px;padding:28px;width:620px;max-width:92vw;max-height:87vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.2);position:relative;}
+.modal-close{position:absolute;top:14px;right:14px;background:var(--g100);border:none;border-radius:50%;width:30px;height:30px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--g500);}
+.modal-close:hover{background:var(--g200);}
+.cand-av-lg{width:60px;height:60px;border-radius:50%;background:var(--purple);color:#fff;font-size:22px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.rec-box{background:var(--purple);color:#fff;border-radius:10px;padding:16px;margin:16px 0;}
+.rec-box-label{font-size:11px;font-weight:700;opacity:.8;text-transform:uppercase;margin-bottom:5px;}
+.rec-box-text{font-size:14px;font-weight:700;}
 
-/* ASSIST DARK */
-.assist-dark{background:#111827;border-radius:12px;padding:20px;}
-.assist-dark h4{font-size:11px;font-weight:800;color:#a855f7;text-transform:uppercase;letter-spacing:1px;margin-bottom:14px;}
-.a-row{margin-bottom:13px;padding-bottom:13px;border-bottom:1px solid #1f2937;}
-.a-row:last-child{margin-bottom:0;padding-bottom:0;border-bottom:none;}
-.a-lbl{font-size:10px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px;}
-.a-val{font-size:14px;font-weight:700;color:#f9fafb;}
-.a-val.warn{color:#fbbf24;}.a-val.crit{color:#f87171;}
+/* ============================================================
+   ASSESSMENT / SCORE PANEL
+   ============================================================ */
+.score-panel{animation:popIn .3s ease;}
+@keyframes popIn{from{opacity:0;transform:scale(.97);}to{opacity:1;transform:scale(1);}}
+.overall-score{text-align:center;padding:20px;background:var(--purple-l);border-radius:var(--radius);margin:16px 0;}
+.score-big{font-size:52px;font-weight:900;color:var(--purple);}
+.score-lbl{font-size:13px;color:var(--g500);margin-top:4px;}
+.scenario-callout{background:var(--purple-l);border-left:4px solid var(--purple);border-radius:8px;padding:14px 16px;margin-bottom:14px;}
+.sc-lbl{font-size:11px;font-weight:800;color:var(--purple);text-transform:uppercase;margin-bottom:5px;}
+.sc-txt{font-size:14px;color:var(--g800);font-style:italic;line-height:1.6;}
+.reveal-btn{background:none;border:1px dashed var(--purple);border-radius:6px;color:var(--purple);font-size:12px;font-weight:600;padding:5px 12px;cursor:pointer;margin-top:8px;font-family:inherit;}
+.reveal-content{display:none;margin-top:10px;padding:10px;background:#fff;border-radius:6px;font-size:13px;color:var(--g700);line-height:1.5;}
 
-/* LOOP DIAGRAM */
-.loop-diagram{max-width:860px;margin:0 auto;}
-.loop-top-row,.loop-bot-row{display:flex;align-items:center;}
-.loop-node{padding:12px 10px;border-radius:10px;text-align:center;font-size:11px;font-weight:800;color:#fff;line-height:1.4;flex-shrink:0;width:148px;}
-.loop-h-arrow{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;}
-.loop-h-line{width:100%;height:3px;position:relative;}
-.loop-h-line.fwd{background:var(--green);}
-.loop-h-line.fwd::after{content:'';position:absolute;right:-7px;top:-5px;border:7px solid transparent;border-left-color:var(--green);}
-.loop-h-line.bwd{background:var(--purple);}
-.loop-h-line.bwd::before{content:'';position:absolute;left:-7px;top:-5px;border:7px solid transparent;border-right-color:var(--purple);}
-.loop-corr{font-size:11px;font-weight:700;}
-.loop-verts{display:flex;justify-content:space-between;padding:0 73px;}
-.loop-vert{display:flex;flex-direction:column;align-items:center;}
-.loop-vert-line{width:3px;height:36px;}
+/* ============================================================
+   STATS TABLE (Module 6)
+   ============================================================ */
+.stats-tbl{width:100%;border-collapse:collapse;}
+.stats-tbl th{background:var(--purple);color:#fff;padding:10px 14px;font-size:12px;font-weight:700;text-align:left;}
+.stats-tbl td{padding:10px 14px;font-size:13px;border-bottom:1px solid var(--g100);color:var(--g700);vertical-align:top;}
+.stats-tbl tr:nth-child(even) td{background:var(--g50);}
+.stat-name{font-weight:700;color:var(--charcoal);}
+.stat-val{font-weight:800;color:var(--purple);}
+.stat-meaning{font-size:12px;line-height:1.5;}
 
-/* COHORT ROWS */
+/* ============================================================
+   MODEL VALIDATION / BIAS
+   ============================================================ */
+.valid-card{background:#fff;border:1px solid var(--g200);border-radius:var(--radius);padding:16px;text-align:center;box-shadow:var(--shadow);}
+.valid-pct{font-size:28px;font-weight:900;color:var(--green);margin-bottom:4px;}
+.valid-lbl{font-size:12px;color:var(--g500);}
+.bias-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--g100);font-size:13px;}
+.bias-row:last-child{border-bottom:none;}
+.bias-metric{color:var(--g700);font-weight:600;}
+
+/* ============================================================
+   CIRCULAR FLOW
+   ============================================================ */
+.r-tooltip{position:absolute;background:var(--charcoal);color:#fff;padding:10px 14px;border-radius:8px;font-size:12px;line-height:1.5;max-width:240px;z-index:50;pointer-events:none;display:none;box-shadow:0 8px 20px rgba(0,0,0,.2);}
+.flow-node-box{cursor:pointer;transition:opacity .2s;}
+.flow-node-box:hover{opacity:.85;}
+
+/* ============================================================
+   MISC
+   ============================================================ */
+.flex{display:flex;}.items-center{align-items:center;}.justify-between{justify-content:space-between;}
+.gap-8{gap:8px;}.gap-12{gap:12px;}.gap-16{gap:16px;}
+.text-center{text-align:center;}.text-right{text-align:right;}
+.fw-700{font-weight:700;}.fw-900{font-weight:900;}
+.text-pur{color:var(--purple);}.text-grn{color:var(--green);}.text-red{color:var(--red);}.text-amb{color:var(--amber);}
+.text-gray{color:var(--g500);}
+.td-b{color:var(--red);font-weight:700;}.td-a{color:var(--green);font-weight:700;}
 .row-ai{background:#f0fdf4;}.row-leg{background:#fffbeb;}.row-ret{background:var(--g50);}
 
-/* IMPACT TABLE */
-.td-b{color:var(--red);font-weight:700;}.td-a{color:var(--green);font-weight:700;}
-
-/* SCORE PANEL */
-.score-panel{animation:popIn .35s ease;}
-@keyframes popIn{from{opacity:0;transform:scale(.97);}to{opacity:1;transform:scale(1);}}
-
-/* SCENARIO CALLOUT */
-.s-callout{background:var(--purple-l);border-left:4px solid var(--purple);border-radius:8px;padding:14px 16px;margin-bottom:14px;}
-.s-callout .slbl{font-size:11px;font-weight:800;color:var(--purple);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;}
-.s-callout .stxt{font-size:14px;color:var(--g800);font-style:italic;line-height:1.6;}
-
-/* LIVE DOT */
-@keyframes blink{0%,100%{opacity:1;}50%{opacity:.3;}}
-.ldot{width:8px;height:8px;border-radius:50%;background:var(--red);display:inline-block;animation:blink 1s infinite;}
-
-/* FOOTER */
-.footer{text-align:center;padding:22px;font-size:13px;color:var(--g500);border-top:1px solid var(--g200);margin-top:20px;}
-
-/* RESPONSIVE */
-@media(max-width:1100px){.g4{grid-template-columns:1fr 1fr;}.kpi-row{grid-template-columns:1fr 1fr;}}
-@media(max-width:768px){.main{padding:16px;}.g2,.g3,.g4{grid-template-columns:1fr;}.kpi-row{grid-template-columns:1fr 1fr;}.hdr{padding:16px 16px 0;}.tabbar{padding:0 16px;}}
+@media(max-width:1200px){.kpi-row{grid-template-columns:repeat(4,1fr);}}
+@media(max-width:960px){.sidebar{width:180px;}.g4{grid-template-columns:1fr 1fr;}}
 </style>
 </head>
 <body>
 
-<div class="accent"></div>
-
-<!-- HEADER -->
-<header class="hdr">
-  <div class="hdr-row">
-    <div class="logo">⚡</div>
-    <div>
-      <div class="hdr-t">AI Hiring and Training Intelligence Agent</div>
-      <div class="hdr-s">Contact Centre Performance Intelligence Platform</div>
-    </div>
+<!-- ======================================================
+     SIDEBAR
+     ====================================================== -->
+<aside class="sidebar">
+  <div class="sb-brand">
+    <div class="sb-logo">⚡</div>
+    <div class="sb-name">AI Hiring &amp; Training</div>
+    <div class="sb-sub">Intelligence Platform</div>
   </div>
-  <div class="kpi-row">
-    <div class="kpi"><div class="kpi-lbl">Agents Analyzed</div><div class="kpi-val">224</div><div class="kpi-sub">12-month cohort study</div></div>
-    <div class="kpi"><div class="kpi-lbl">Assessment Correlation Before</div><div class="kpi-val red">p = 0.828</div><div class="kpi-sub">No predictive signal</div></div>
-    <div class="kpi"><div class="kpi-lbl">Assessment Correlation After</div><div class="kpi-val grn">p = 0.04</div><div class="kpi-sub">Statistically significant</div></div>
-    <div class="kpi"><div class="kpi-lbl">Bottom Quartile Reduction</div><div class="kpi-val grn">50%</div><div class="kpi-sub">44% → 22% of population</div></div>
-  </div>
-</header>
-
-<!-- TAB BAR -->
-<div class="tabbar">
-  <nav>
-    <button class="tb on"  onclick="switchTab('hiring',this)">Hiring Intelligence</button>
-    <button class="tb"     onclick="switchTab('training',this)">Training Performance</button>
-    <button class="tb"     onclick="switchTab('feedback',this)">Performance Feedback Loop</button>
+  <nav class="sb-nav">
+    <button class="nav-btn on" onclick="showModule('executive',this)"><span class="nav-icon">🏠</span><span class="nav-label">Executive Command Center</span></button>
+    <button class="nav-btn" onclick="showModule('hiring',this)"><span class="nav-icon">👥</span><span class="nav-label">Hiring Intelligence</span></button>
+    <button class="nav-btn" onclick="showModule('assessment',this)"><span class="nav-icon">🎯</span><span class="nav-label">Assessment Engine</span></button>
+    <button class="nav-btn" onclick="showModule('training',this)"><span class="nav-icon">📚</span><span class="nav-label">Training Intelligence</span></button>
+    <button class="nav-btn" onclick="showModule('probation',this)"><span class="nav-icon">⚠️</span><span class="nav-label">Probation Intelligence</span></button>
+    <button class="nav-btn" onclick="showModule('feedback',this)"><span class="nav-icon">🔄</span><span class="nav-label">Feedback Loop</span></button>
   </nav>
-</div>
+  <div class="sb-footer">AI Hiring &amp; Training<br>Intelligence Platform<br>Workforce Decision Intelligence</div>
+</aside>
 
-<div class="main">
+<!-- ======================================================
+     MAIN AREA
+     ====================================================== -->
+<div class="main-area">
 
-<!-- ================================================================
-     TAB 1 — HIRING INTELLIGENCE
-     ================================================================ -->
-<div id="pane-hiring" class="pane on">
+  <!-- TOP BAR -->
+  <header class="top-bar">
+    <div>
+      <div class="h-title">AI Hiring and Training Intelligence Platform</div>
+      <div class="h-sub">Workforce Decision Intelligence</div>
+    </div>
+    <div class="hdr-right">
+      <span class="h-date" id="today-date"></span>
+      <button class="alert-btn" onclick="alert('3 active alerts: 18 agents predicted to fail probation · 3 high-risk cohorts · Assessment cohort ready for review')">
+        🔔<span class="alert-dot">3</span>
+      </button>
+      <span class="user-label">Admin</span>
+      <div class="user-av">A</div>
+    </div>
+  </header>
 
-  <!-- S1: Assessment Validity -->
-  <div class="sec">
-    <div class="sec-t">Pre-Hire Assessment Predictive Validity Analysis</div>
-    <div class="sec-s">Chi-Square analysis across 224 agent cohort</div>
-    <div class="g2">
+  <!-- CONTENT AREA -->
+  <div class="content-area">
 
-      <div class="card" style="text-align:center;padding:32px 24px;">
-        <div style="font-size:15px;font-weight:700;color:var(--g700);margin-bottom:4px;">Top Band Scorers — Production Outcome</div>
-        <div class="ring"><div class="ring-v">51%</div><div class="ring-s">bottom<br>quartile</div></div>
-        <div style="font-size:14px;color:var(--g500);margin-bottom:18px;">fell in bottom quartile of production</div>
-        <span class="badge b-red" style="font-size:13px;padding:7px 18px;">p = 0.828 — No Correlation</span>
+    <!-- ====================================================
+         MODULE 1 — EXECUTIVE COMMAND CENTER
+         ==================================================== -->
+    <div id="mod-executive" class="module on">
+
+      <!-- 8 KPI cards -->
+      <div class="kpi-row">
+        <div class="kpi"><div class="kpi-lbl">Agents Analyzed</div><div class="kpi-val">224</div><div class="kpi-sub">12-month cohort</div></div>
+        <div class="kpi"><div class="kpi-lbl">Hiring Accuracy</div><div class="kpi-val grn">+47%</div><div class="kpi-sub">vs legacy system</div></div>
+        <div class="kpi"><div class="kpi-lbl">Bottom Quartile</div><div class="kpi-val grn">-50%</div><div class="kpi-sub">44% → 22%</div></div>
+        <div class="kpi"><div class="kpi-lbl">Graduation Rate</div><div class="kpi-val grn">+63%</div><div class="kpi-sub">30% → 11% failure</div></div>
+        <div class="kpi"><div class="kpi-lbl">Ramp Time</div><div class="kpi-val grn">-50%</div><div class="kpi-sub">16 → 8 weeks</div></div>
+        <div class="kpi"><div class="kpi-lbl">Churn Reduction</div><div class="kpi-val grn">-8.2pp</div><div class="kpi-sub">measured reduction</div></div>
+        <div class="kpi"><div class="kpi-lbl">Annual Savings</div><div class="kpi-val grn">$2.4M</div><div class="kpi-sub">estimated impact</div></div>
+        <div class="kpi"><div class="kpi-lbl">Interactions Deflected</div><div class="kpi-val grn">600K+</div><div class="kpi-sub">via quality improvement</div></div>
       </div>
 
+      <!-- Risk summary -->
+      <div class="g4 mb-20">
+        <div class="risk-card r-red"><div class="risk-num">3</div><div class="risk-lbl">High Risk Cohorts</div></div>
+        <div class="risk-card r-amb"><div class="risk-num">18</div><div class="risk-lbl">Probation at Risk</div></div>
+        <div class="risk-card r-amb"><div class="risk-num">7</div><div class="risk-lbl">Training Risks</div></div>
+        <div class="risk-card r-red"><div class="risk-num">2</div><div class="risk-lbl">Escalation Alerts</div></div>
+      </div>
+
+      <!-- Insights + Actions -->
+      <div class="g2 mb-20">
+        <!-- AI Insights -->
+        <div class="insight-panel">
+          <div class="insight-ttl">🤖 AI Generated Insights — Today</div>
+          <div class="insight-item">
+            <div class="insight-ico">📈</div>
+            <div class="insight-body">
+              <div class="insight-txt">Late fee scenarios continue to create highest churn risk. Empathy interventions reduced failure rates by 12% this month.</div>
+              <div class="insight-trend t-up">▲ Improving — empathy coaching having measurable effect</div>
+            </div>
+          </div>
+          <div class="insight-item">
+            <div class="insight-ico">⚠️</div>
+            <div class="insight-body">
+              <div class="insight-txt">Cohort C agents hired under legacy system showing 2.3x higher escalation rates than Cohort A. Consider targeted retraining.</div>
+              <div class="insight-trend t-warn">⚠️ Action required — legacy cohort underperforming</div>
+            </div>
+          </div>
+          <div class="insight-item">
+            <div class="insight-ico">✅</div>
+            <div class="insight-body">
+              <div class="insight-txt">Assessment score threshold at 50th percentile continues to show strong predictive validity. p=0.04 maintained across new cohorts.</div>
+              <div class="insight-trend t-ok">✅ Confirmed — model performing as expected</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recommended Actions -->
+        <div>
+          <div class="sec-h" style="margin-top:0;">🚀 AI Recommended Actions</div>
+          <div class="action-card a-amb">
+            <div class="act-sev">⚠️ 18 agents predicted to fail probation</div>
+            <div class="act-rec">Recommended: Launch targeted empathy coaching module</div>
+            <div class="act-imp">Expected impact: <strong>Reduce failure rate by 8%</strong></div>
+            <button class="btn btn-pur btn-sm" onclick="alert('Action executed: Empathy coaching module assigned to 18 flagged agents.')">Execute Action</button>
+          </div>
+          <div class="action-card a-red">
+            <div class="act-sev">🔴 3 high-risk cohorts showing declining sentiment</div>
+            <div class="act-rec">Recommended: Schedule immediate supervisor review</div>
+            <div class="act-imp">Expected impact: <strong>Prevent 12 potential exits</strong></div>
+            <button class="btn btn-pur btn-sm" onclick="alert('Action executed: Supervisor review scheduled for Cohorts C, D, and E.')">Execute Action</button>
+          </div>
+          <div class="action-card a-grn">
+            <div class="act-sev">✅ New assessment cohort showing strong correlation</div>
+            <div class="act-rec">Recommended: Maintain current threshold at 50th percentile</div>
+            <div class="act-imp">Expected impact: <strong>Sustain hiring accuracy improvement</strong></div>
+            <button class="btn btn-out btn-sm" onclick="showModule('feedback',document.querySelectorAll('.nav-btn')[5])">Review Results</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- What Changed This Month -->
+      <div class="sec-h">📊 What Changed This Month</div>
+      <div class="g4">
+        <div class="change-card"><div class="ch-arrow text-grn">▼</div><div><div class="ch-lbl">Graduation failure</div><div class="ch-vals">13% → 11%</div><div class="ch-ind">▼ Improving</div></div></div>
+        <div class="change-card"><div class="ch-arrow text-grn">✅</div><div><div class="ch-lbl">Assessment correlation</div><div class="ch-vals">p=0.04 maintained</div><div class="ch-ind">✅ Stable</div></div></div>
+        <div class="change-card"><div class="ch-arrow text-grn">▼</div><div><div class="ch-lbl">Bottom quartile</div><div class="ch-vals">23% → 22%</div><div class="ch-ind">▼ Improving</div></div></div>
+        <div class="change-card"><div class="ch-arrow text-grn">▼</div><div><div class="ch-lbl">Avg ramp time</div><div class="ch-vals">8.2 → 7.9 weeks</div><div class="ch-ind">▼ Improving</div></div></div>
+      </div>
+
+    </div><!-- /executive -->
+
+
+    <!-- ====================================================
+         MODULE 2 — HIRING INTELLIGENCE
+         ==================================================== -->
+    <div id="mod-hiring" class="module">
+      <div class="mod-title">👥 Hiring Intelligence</div>
+      <div class="mod-sub">AI-powered candidate pipeline — every score predicts production outcome</div>
+
+      <!-- Funnel -->
+      <div class="sec-h">Hiring Funnel — Volume &amp; Conversion</div>
+      <div class="card mb-20">
+        <div class="funnel-row" id="funnel-row"></div>
+      </div>
+
+      <!-- Candidate table -->
+      <div class="sec-h">Active Candidates — AI Scored</div>
       <div class="card">
-        <div style="font-size:14px;font-weight:700;color:var(--g700);margin-bottom:14px;">Assessment Band vs Production Outcome</div>
-        <table class="tbl">
-          <thead><tr><th>Band</th><th>Agents</th><th>Top Quartile</th><th>Bottom Quartile</th><th>Signal</th></tr></thead>
+        <div class="tbl-wrap">
+          <table class="tbl">
+            <thead>
+              <tr>
+                <th>Candidate</th>
+                <th>Assess. Score</th>
+                <th>Simulation</th>
+                <th>Hiring Confidence</th>
+                <th>Risk</th>
+                <th>Grad. Probability</th>
+                <th>Recommendation</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="candidate-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div><!-- /hiring -->
+
+
+    <!-- ====================================================
+         MODULE 3 — ASSESSMENT ENGINE
+         ==================================================== -->
+    <div id="mod-assessment" class="module">
+      <div class="mod-title">🎯 Dynamic Scenario Assessment Engine</div>
+      <div class="mod-sub">Scenarios generated from production transcripts and top performer behaviours</div>
+
+      <div class="g2" style="align-items:start;">
+        <!-- Left: Simulator -->
+        <div>
+          <!-- Controls -->
+          <div class="card mb-16">
+            <div class="flex gap-12" style="flex-wrap:wrap;">
+              <div style="flex:1;min-width:140px;">
+                <label style="font-size:11px;font-weight:700;color:var(--g500);display:block;margin-bottom:5px;text-transform:uppercase;">Complexity</label>
+                <select id="complexity-sel" onchange="updateScenarioBadges()">
+                  <option value="moderate">Moderate</option>
+                  <option value="basic">Basic</option>
+                  <option value="advanced">Advanced</option>
+                  <option value="critical">Critical</option>
+                </select>
+              </div>
+              <div style="flex:1;min-width:140px;">
+                <label style="font-size:11px;font-weight:700;color:var(--g500);display:block;margin-bottom:5px;text-transform:uppercase;">Intent</label>
+                <select id="intent-sel" onchange="loadScenario()">
+                  <option value="">— Select intent —</option>
+                  <option value="late-fee">Late Fee Dispute</option>
+                  <option value="autopay">AutoPay Cancellation</option>
+                  <option value="damaged">Damaged Device</option>
+                  <option value="port-out">Port-Out Prevention</option>
+                  <option value="network">Network Complaint</option>
+                  <option value="bill-shock">Bill Shock</option>
+                  <option value="cancellation">Cancellation Request</option>
+                  <option value="upgrade">Upgrade Enquiry</option>
+                </select>
+              </div>
+              <div style="display:flex;align-items:flex-end;gap:8px;padding-bottom:2px;">
+                <span id="emotion-badge" class="badge b-gry">Emotion: —</span>
+                <span id="risk-badge" class="badge b-gry">Risk: —</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Scenario card -->
+          <div id="sim-scenario-card" style="display:none;" class="mb-16">
+            <div class="scenario-callout">
+              <div class="sc-lbl">Customer Statement</div>
+              <div id="sim-stmt" class="sc-txt"></div>
+              <button class="reveal-btn" onclick="toggleReveal('top-perf')">▶ Show top performer approach</button>
+              <div id="top-perf" class="reveal-content"></div>
+            </div>
+            <div style="background:var(--amber-l);border-left:3px solid var(--amber);border-radius:6px;padding:10px 13px;font-size:13px;color:#92400e;">
+              <strong>Common failure pattern:</strong> <span id="sim-failure"></span>
+            </div>
+          </div>
+
+          <textarea id="sim-resp" placeholder="Type your agent response here..."></textarea>
+
+          <!-- API Key input -->
+          <div style="margin-top:12px;background:var(--purple-l);border:1px solid #c4b5fd;border-radius:8px;padding:11px 14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+            <span style="font-size:20px;">🤖</span>
+            <div style="flex:1;min-width:180px;">
+              <label style="font-size:10px;font-weight:700;color:var(--purple);display:block;margin-bottom:3px;text-transform:uppercase;letter-spacing:.4px;">Claude API Key — Real AI Scoring</label>
+              <input id="api-key-input" type="password" placeholder="sk-ant-… (optional — runs in demo mode without)" style="width:100%;border:1px solid #c4b5fd;border-radius:6px;padding:6px 10px;font-size:12px;background:#fff;color:var(--g800);outline:none;"/>
+            </div>
+            <span id="api-mode-badge" class="badge b-gry" style="font-size:11px;">Demo Mode</span>
+          </div>
+
+          <button id="score-btn" class="btn btn-pur btn-lg" style="margin-top:10px;width:100%;" onclick="runAssessment()">Score My Response</button>
+          <div id="score-loading" style="display:none;margin-top:12px;text-align:center;padding:18px;background:var(--purple-l);border-radius:8px;">
+            <div style="font-size:22px;margin-bottom:6px;">🤖</div>
+            <div style="font-size:13px;font-weight:700;color:var(--purple);">Claude is analysing your response…</div>
+            <div style="font-size:12px;color:var(--g500);margin-top:3px;">Scoring across 6 dimensions against top performer benchmarks</div>
+          </div>
+
+          <!-- Results -->
+          <div id="sim-result" style="display:none;margin-top:20px;" class="score-panel">
+            <div class="overall-score">
+              <div class="score-big" id="score-overall"></div>
+              <div class="score-lbl">Overall Score — <span id="score-pct"></span>th Percentile</div>
+              <div style="margin-top:10px;" id="score-badge-wrap"></div>
+            </div>
+            <div id="sim-dimensions"></div>
+            <div class="g2 mt-16" style="margin-top:16px;">
+              <div style="background:var(--green-l);border-left:3px solid var(--green);padding:12px;border-radius:8px;font-size:13px;">
+                <strong style="color:var(--green);">Strength Areas</strong>
+                <div id="fb-strengths" style="margin-top:5px;color:var(--g700);"></div>
+              </div>
+              <div style="background:var(--amber-l);border-left:3px solid var(--amber);padding:12px;border-radius:8px;font-size:13px;">
+                <strong style="color:var(--amber);">Improvement Areas</strong>
+                <div id="fb-improve" style="margin-top:5px;color:var(--g700);"></div>
+              </div>
+            </div>
+            <div style="background:var(--blue-l);border-left:3px solid var(--blue);padding:12px;border-radius:8px;font-size:13px;margin-top:10px;">
+              <strong style="color:var(--blue);">Suggested Alternative Answer</strong>
+              <div id="fb-suggest" style="margin-top:5px;color:var(--g700);"></div>
+            </div>
+            <div style="background:var(--purple-l);border-left:3px solid var(--purple);padding:12px;border-radius:8px;font-size:13px;margin-top:10px;">
+              <strong style="color:var(--purple);">Top Performer Comparison</strong>
+              <div id="fb-top" style="margin-top:5px;color:var(--g700);"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Scenario Bank -->
+        <div>
+          <div class="card">
+            <div class="sec-h" style="margin-top:0;">Scenario Bank</div>
+            <div id="scenario-bank"></div>
+          </div>
+        </div>
+      </div>
+    </div><!-- /assessment -->
+
+
+    <!-- ====================================================
+         MODULE 4 — TRAINING INTELLIGENCE
+         ==================================================== -->
+    <div id="mod-training" class="module">
+      <div class="mod-title">📚 Training Intelligence</div>
+      <div class="mod-sub">Real-time coaching signals and AI-recommended interventions for every trainee</div>
+
+      <!-- Overview cards -->
+      <div class="g5 mb-20">
+        <div class="kpi"><div class="kpi-lbl">Active Trainees</div><div class="kpi-val">47</div><div class="kpi-sub">current cohort</div></div>
+        <div class="kpi"><div class="kpi-lbl">Avg Training Score</div><div class="kpi-val">74/100</div><div class="kpi-sub">cohort average</div></div>
+        <div class="kpi"><div class="kpi-lbl">At Risk of Failing</div><div class="kpi-val amb">7</div><div class="kpi-sub">intervention required</div></div>
+        <div class="kpi"><div class="kpi-lbl">On Track</div><div class="kpi-val grn">38</div><div class="kpi-sub">to graduate</div></div>
+        <div class="kpi"><div class="kpi-lbl">Predicted Grad. Rate</div><div class="kpi-val grn">89%</div><div class="kpi-sub">vs 70% legacy</div></div>
+      </div>
+
+      <!-- Skill Heatmap -->
+      <div class="sec-h">Skill Proficiency Heatmap — Active Cohort</div>
+      <div class="card mb-20">
+        <div class="heatmap-wrap">
+          <div id="heatmap-grid" class="hm-grid"></div>
+        </div>
+      </div>
+
+      <!-- Coaching Cards + Recommendations -->
+      <div class="g2">
+        <div>
+          <div class="sec-h" style="margin-top:0;">Agent Coaching Plans</div>
+          <div class="g2" style="gap:12px;">
+
+            <div class="agent-card ac-amb">
+              <div class="ag-hdr"><div class="ag-av av-amb">SK</div><div><div class="ag-name">Sarah K.</div><span class="badge b-amb">At Risk</span></div></div>
+              <div class="pb-wrap"><div class="pb-row"><span>Score</span><span class="pb-score">74/100</span></div><div class="pb-bg"><div class="pb-fill pb-amb" data-w="74"></div></div></div>
+              <div style="font-size:12px;color:var(--g500);margin-bottom:6px;">Knowledge gaps:</div>
+              <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px;"><span class="badge b-red">Escalation Handling</span><span class="badge b-red">Billing Disputes</span></div>
+              <div class="ai-rec-box"><div class="ai-rec-lbl">AI Recommendation</div>Assign empathy coaching module — focus on de-escalation sequencing</div>
+              <div style="font-size:12px;color:var(--green);font-weight:700;margin-bottom:10px;">Expected impact: +11% graduation probability</div>
+              <button class="btn btn-amb btn-sm" onclick="alert('Coaching module assigned to Sarah K.')">Assign Coaching</button>
+            </div>
+
+            <div class="agent-card ac-grn">
+              <div class="ag-hdr"><div class="ag-av av-grn">MR</div><div><div class="ag-name">Marcus R.</div><span class="badge b-grn">On Track</span></div></div>
+              <div class="pb-wrap"><div class="pb-row"><span>Score</span><span class="pb-score">82/100</span></div><div class="pb-bg"><div class="pb-fill pb-grn" data-w="82"></div></div></div>
+              <div style="font-size:12px;color:var(--g500);margin-bottom:6px;">Knowledge gaps:</div>
+              <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px;"><span class="badge b-amb">Advanced Escalations</span></div>
+              <div class="ai-rec-box"><div class="ai-rec-lbl">AI Recommendation</div>Continue current path — add one escalation simulation per week</div>
+              <div style="font-size:12px;color:var(--green);font-weight:700;margin-bottom:10px;">Expected impact: +4% graduation probability</div>
+              <button class="btn btn-out btn-sm" onclick="alert('Training plan opened for Marcus R.')">View Plan</button>
+            </div>
+
+            <div class="agent-card ac-red">
+              <div class="ag-hdr"><div class="ag-av av-red">AM</div><div><div class="ag-name">Aisha M.</div><span class="badge b-red">Critical Risk</span></div></div>
+              <div class="pb-wrap"><div class="pb-row"><span>Score</span><span class="pb-score">61/100</span></div><div class="pb-bg"><div class="pb-fill pb-red" data-w="61"></div></div></div>
+              <div style="font-size:12px;color:var(--g500);margin-bottom:6px;">Knowledge gaps:</div>
+              <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px;"><span class="badge b-red">Empathy</span><span class="badge b-red">Policy</span><span class="badge b-red">Escalation</span></div>
+              <div class="ai-rec-box"><div class="ai-rec-lbl">AI Recommendation</div>Immediate mentor assignment required — 3 simultaneous gaps is critical</div>
+              <div style="font-size:12px;color:var(--red);font-weight:700;margin-bottom:10px;">Without intervention: 73% failure probability</div>
+              <button class="btn btn-red btn-sm" onclick="alert('Urgent action triggered: Mentor assigned to Aisha M. Supervisor notified.')">Urgent Action</button>
+            </div>
+
+            <div class="agent-card ac-grn">
+              <div class="ag-hdr"><div class="ag-av av-grn">DL</div><div><div class="ag-name">David L.</div><span class="badge b-grn">Fast Track</span></div></div>
+              <div class="pb-wrap"><div class="pb-row"><span>Score</span><span class="pb-score">91/100</span></div><div class="pb-bg"><div class="pb-fill pb-grn" data-w="91"></div></div></div>
+              <div style="font-size:12px;color:var(--g500);margin-bottom:6px;">Knowledge gaps:</div>
+              <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px;"><span class="badge b-gry">None significant</span></div>
+              <div class="ai-rec-box"><div class="ai-rec-lbl">AI Recommendation</div>Accelerate to production — David is ready in 5 weeks, not 8</div>
+              <div style="font-size:12px;color:var(--green);font-weight:700;margin-bottom:10px;">Early placement saves 3 weeks of ramp cost</div>
+              <button class="btn btn-grn btn-sm" onclick="alert('Fast track initiated for David L. Production placement scheduled week 5.')">Fast Track</button>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Recommendations panel -->
+        <div>
+          <div class="sec-h" style="margin-top:0;">AI Learning Recommendations</div>
+          <div class="card mb-12">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;"><span class="badge b-pur">AI</span><span style="font-size:14px;font-weight:700;">Deploy Late Fee Simulation Sprint</span></div>
+            <div style="font-size:13px;color:var(--g600);margin-bottom:6px;">Rationale: Late fee scenarios show 3× higher failure rate than other intents across cohort.</div>
+            <div style="font-size:12px;color:var(--green);font-weight:700;">Expected impact: Reduce intent-specific failure by 18%</div>
+          </div>
+          <div class="card mb-12">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;"><span class="badge b-pur">AI</span><span style="font-size:14px;font-weight:700;">Introduce Peer Coaching Pairs</span></div>
+            <div style="font-size:13px;color:var(--g600);margin-bottom:6px;">Rationale: Agents paired with 80th+ percentile peers show 22% faster skill acquisition.</div>
+            <div style="font-size:12px;color:var(--green);font-weight:700;">Expected impact: Reduce average ramp by 1.2 weeks</div>
+          </div>
+          <div class="card">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;"><span class="badge b-pur">AI</span><span style="font-size:14px;font-weight:700;">Escalation Simulation Increase</span></div>
+            <div style="font-size:13px;color:var(--g600);margin-bottom:6px;">Rationale: Escalation handling is the most common gap across 7 at-risk trainees.</div>
+            <div style="font-size:12px;color:var(--green);font-weight:700;">Expected impact: Lift graduation rate by 4–6pp</div>
+          </div>
+
+          <!-- Mini training score trend chart -->
+          <div class="sec-h">Training Score Trends — Last 8 Weeks</div>
+          <div class="card" style="padding:14px;">
+            <svg viewBox="0 0 400 140" style="width:100%;">
+              <!-- Grid lines -->
+              <line x1="40" y1="20" x2="380" y2="20" stroke="#f3f4f6" stroke-width="1"/>
+              <line x1="40" y1="50" x2="380" y2="50" stroke="#f3f4f6" stroke-width="1"/>
+              <line x1="40" y1="80" x2="380" y2="80" stroke="#f3f4f6" stroke-width="1"/>
+              <line x1="40" y1="110" x2="380" y2="110" stroke="#f3f4f6" stroke-width="1"/>
+              <!-- Y labels -->
+              <text x="35" y="23" text-anchor="end" font-size="9" fill="#9ca3af">100</text>
+              <text x="35" y="53" text-anchor="end" font-size="9" fill="#9ca3af">75</text>
+              <text x="35" y="83" text-anchor="end" font-size="9" fill="#9ca3af">50</text>
+              <text x="35" y="113" text-anchor="end" font-size="9" fill="#9ca3af">25</text>
+              <!-- David (green) - high, improving -->
+              <polyline points="40,62 88,58 136,52 184,47 232,43 280,38 328,35 376,30" fill="none" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <!-- Marcus (blue) - medium, improving -->
+              <polyline points="40,80 88,77 136,73 184,69 232,66 280,62 328,59 376,56" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <!-- Sarah (amber) - at risk, flat -->
+              <polyline points="40,95 88,93 136,95 184,92 232,94 280,91 328,93 376,90" fill="none" stroke="#d97706" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <!-- Aisha (red) - declining -->
+              <polyline points="40,88 88,91 136,95 184,99 232,103 280,107 328,109 376,112" fill="none" stroke="#dc2626" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <!-- Legend -->
+              <rect x="42" y="125" width="8" height="8" fill="#16a34a" rx="2"/>
+              <text x="54" y="133" font-size="9" fill="#374151">David</text>
+              <rect x="92" y="125" width="8" height="8" fill="#2563eb" rx="2"/>
+              <text x="104" y="133" font-size="9" fill="#374151">Marcus</text>
+              <rect x="152" y="125" width="8" height="8" fill="#d97706" rx="2"/>
+              <text x="164" y="133" font-size="9" fill="#374151">Sarah</text>
+              <rect x="208" y="125" width="8" height="8" fill="#dc2626" rx="2"/>
+              <text x="220" y="133" font-size="9" fill="#374151">Aisha</text>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div><!-- /training -->
+
+
+    <!-- ====================================================
+         MODULE 5 — PROBATION INTELLIGENCE
+         ==================================================== -->
+    <div id="mod-probation" class="module">
+      <div class="mod-title">⚠️ Probation Intelligence</div>
+      <div class="mod-sub">Week-by-week risk tracking — early signals surface interventions before failure occurs</div>
+
+      <!-- 3 probation cards -->
+      <div class="g3 mb-20">
+
+        <!-- Sarah — High Risk -->
+        <div class="prob-card pc-red">
+          <div class="prob-hdr">
+            <div>
+              <div style="font-size:16px;font-weight:800;color:var(--charcoal);">Sarah K.</div>
+              <div style="font-size:12px;color:var(--g500);">Week 6 of 12 · ID #2219</div>
+            </div>
+            <span class="prob-risk-chip prc-high">HIGH RISK</span>
+          </div>
+          <div style="font-size:13px;font-weight:700;color:var(--red);margin-bottom:4px;">Risk Score: 68% — HIGH</div>
+          <div style="font-size:12px;color:var(--g500);margin-bottom:12px;">Probability of Failing Probation: <strong style="color:var(--red);">73%</strong></div>
+          <div style="font-size:11px;font-weight:700;color:var(--g500);margin-bottom:6px;">SIGNALS DETECTED</div>
+          <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:14px;">
+            <span class="badge b-red">Declining Sentiment</span>
+            <span class="badge b-red">Low Empathy</span>
+            <span class="badge b-red">Repeated Escalations</span>
+          </div>
+          <div style="font-size:11px;font-weight:700;color:var(--g500);margin-bottom:6px;">WEEK-BY-WEEK TIMELINE</div>
+          <div class="prob-tl">
+            <div class="prob-week"><div class="prob-dot d-grn">✓</div><div class="prob-wlbl">Wk1</div></div>
+            <div class="prob-week"><div class="prob-dot d-grn">✓</div><div class="prob-wlbl">Wk2</div></div>
+            <div class="prob-week"><div class="prob-dot d-amb">!</div><div class="prob-wlbl">Wk3</div></div>
+            <div class="prob-week"><div class="prob-dot d-amb">!</div><div class="prob-wlbl">Wk4</div></div>
+            <div class="prob-week"><div class="prob-dot d-red">✗</div><div class="prob-wlbl">Wk5</div></div>
+            <div class="prob-week"><div class="prob-dot d-red">✗</div><div class="prob-wlbl">Wk6</div></div>
+            <div class="prob-week"><div class="prob-dot d-emp">—</div><div class="prob-wlbl">Wk8</div></div>
+            <div class="prob-week"><div class="prob-dot d-emp">—</div><div class="prob-wlbl">Wk12</div></div>
+          </div>
+          <div class="prob-m"><span class="prob-mlbl">Training Score</span><span class="prob-mval text-red">61/100 ▼ declining</span></div>
+          <div class="prob-m"><span class="prob-mlbl">Resolution %</span><span class="prob-mval text-red">58% ▼ declining</span></div>
+          <div class="prob-m"><span class="prob-mlbl">Attendance</span><span class="prob-mval text-grn">94% ✅</span></div>
+          <div class="prob-m"><span class="prob-mlbl">Escalations this week</span><span class="prob-mval text-amb">7 ⚠️</span></div>
+          <div class="prob-m"><span class="prob-mlbl">Coaching completion</span><span class="prob-mval text-red">43% ❌</span></div>
+          <div class="prob-act pact-red">
+            <div class="pact-title">Recommended Action</div>
+            Assign mentor immediately · Schedule targeted empathy simulations · Supervisor review within 7 days
+          </div>
+          <button class="btn btn-red btn-sm" style="margin-top:12px;width:100%;" onclick="alert('Action taken: Mentor assigned. Supervisor review scheduled. Simulation sprint activated for Sarah K.')">Take Action</button>
+        </div>
+
+        <!-- Marcus — Medium Risk -->
+        <div class="prob-card pc-amb">
+          <div class="prob-hdr">
+            <div>
+              <div style="font-size:16px;font-weight:800;color:var(--charcoal);">Marcus R.</div>
+              <div style="font-size:12px;color:var(--g500);">Week 4 of 12 · ID #2231</div>
+            </div>
+            <span class="prob-risk-chip prc-med">MEDIUM RISK</span>
+          </div>
+          <div style="font-size:13px;font-weight:700;color:var(--amber);margin-bottom:4px;">Risk Score: 34% — MEDIUM</div>
+          <div style="font-size:12px;color:var(--g500);margin-bottom:12px;">Probability of Failing: <strong style="color:var(--amber);">31%</strong></div>
+          <div style="font-size:11px;font-weight:700;color:var(--g500);margin-bottom:6px;">SIGNALS DETECTED</div>
+          <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:14px;">
+            <span class="badge b-amb">Moderate Empathy Gap</span>
+            <span class="badge b-amb">Occasional Escalations</span>
+          </div>
+          <div style="font-size:11px;font-weight:700;color:var(--g500);margin-bottom:6px;">WEEK-BY-WEEK TIMELINE</div>
+          <div class="prob-tl">
+            <div class="prob-week"><div class="prob-dot d-amb">!</div><div class="prob-wlbl">Wk1</div></div>
+            <div class="prob-week"><div class="prob-dot d-grn">✓</div><div class="prob-wlbl">Wk2</div></div>
+            <div class="prob-week"><div class="prob-dot d-grn">✓</div><div class="prob-wlbl">Wk3</div></div>
+            <div class="prob-week"><div class="prob-dot d-grn">✓</div><div class="prob-wlbl">Wk4</div></div>
+            <div class="prob-week"><div class="prob-dot d-emp">—</div><div class="prob-wlbl">Wk8</div></div>
+            <div class="prob-week"><div class="prob-dot d-emp">—</div><div class="prob-wlbl">Wk12</div></div>
+          </div>
+          <div class="prob-m"><span class="prob-mlbl">Training Score</span><span class="prob-mval">74/100 → stable</span></div>
+          <div class="prob-m"><span class="prob-mlbl">Resolution %</span><span class="prob-mval">71% → stable</span></div>
+          <div class="prob-m"><span class="prob-mlbl">Attendance</span><span class="prob-mval text-grn">98% ✅</span></div>
+          <div class="prob-m"><span class="prob-mlbl">Escalations this week</span><span class="prob-mval">3</span></div>
+          <div class="prob-m"><span class="prob-mlbl">Coaching completion</span><span class="prob-mval text-grn">88% ✅</span></div>
+          <div class="prob-act pact-amb">
+            <div class="pact-title">Recommended Action</div>
+            Continue current plan · Monitor escalation frequency · Add empathy module in week 5
+          </div>
+          <button class="btn btn-amb btn-sm" style="margin-top:12px;width:100%;" onclick="alert('Marcus R. set to monitored status. Escalation alerts enabled.')">Monitor</button>
+        </div>
+
+        <!-- Priya — Low Risk -->
+        <div class="prob-card pc-grn">
+          <div class="prob-hdr">
+            <div>
+              <div style="font-size:16px;font-weight:800;color:var(--charcoal);">Priya P.</div>
+              <div style="font-size:12px;color:var(--g500);">Week 3 of 12 · ID #2248</div>
+            </div>
+            <span class="prob-risk-chip prc-low">LOW RISK</span>
+          </div>
+          <div style="font-size:13px;font-weight:700;color:var(--green);margin-bottom:4px;">Risk Score: 12% — LOW</div>
+          <div style="font-size:12px;color:var(--g500);margin-bottom:12px;">Probability of Failing: <strong style="color:var(--green);">8%</strong></div>
+          <div style="font-size:11px;font-weight:700;color:var(--g500);margin-bottom:6px;">SIGNALS DETECTED</div>
+          <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:14px;">
+            <span class="badge b-grn">Strong across all dimensions</span>
+          </div>
+          <div style="font-size:11px;font-weight:700;color:var(--g500);margin-bottom:6px;">WEEK-BY-WEEK TIMELINE</div>
+          <div class="prob-tl">
+            <div class="prob-week"><div class="prob-dot d-grn">✓</div><div class="prob-wlbl">Wk1</div></div>
+            <div class="prob-week"><div class="prob-dot d-grn">✓</div><div class="prob-wlbl">Wk2</div></div>
+            <div class="prob-week"><div class="prob-dot d-grn">✓</div><div class="prob-wlbl">Wk3</div></div>
+            <div class="prob-week"><div class="prob-dot d-emp">—</div><div class="prob-wlbl">Wk8</div></div>
+            <div class="prob-week"><div class="prob-dot d-emp">—</div><div class="prob-wlbl">Wk12</div></div>
+          </div>
+          <div class="prob-m"><span class="prob-mlbl">Training Score</span><span class="prob-mval text-grn">88/100 ▲ improving</span></div>
+          <div class="prob-m"><span class="prob-mlbl">Resolution %</span><span class="prob-mval text-grn">84% ▲ improving</span></div>
+          <div class="prob-m"><span class="prob-mlbl">Attendance</span><span class="prob-mval text-grn">100% ✅</span></div>
+          <div class="prob-m"><span class="prob-mlbl">Escalations this week</span><span class="prob-mval text-grn">1 ✅</span></div>
+          <div class="prob-m"><span class="prob-mlbl">Coaching completion</span><span class="prob-mval text-grn">100% ✅</span></div>
+          <div class="prob-act pact-grn">
+            <div class="pact-title">Status</div>
+            On track for early graduation · Consider fast-track to production at week 8
+          </div>
+          <div style="margin-top:12px;text-align:center;"><span class="badge b-grn" style="font-size:13px;padding:8px 20px;">✅ On Track — No Action Required</span></div>
+        </div>
+
+      </div>
+
+      <!-- Probation Risk Trend Chart -->
+      <div class="sec-h">Probation Risk Score — Weekly Trend</div>
+      <div class="card">
+        <svg viewBox="0 0 580 200" style="width:100%;">
+          <!-- Grid lines -->
+          <line x1="50" y1="20" x2="560" y2="20" stroke="#f3f4f6" stroke-width="1"/>
+          <line x1="50" y1="57" x2="560" y2="57" stroke="#f3f4f6" stroke-width="1"/>
+          <line x1="50" y1="95" x2="560" y2="95" stroke="#f3f4f6" stroke-width="1"/>
+          <line x1="50" y1="132" x2="560" y2="132" stroke="#f3f4f6" stroke-width="1"/>
+          <line x1="50" y1="170" x2="560" y2="170" stroke="#e5e7eb" stroke-width="1"/>
+          <!-- Y labels -->
+          <text x="44" y="23" text-anchor="end" font-size="9" fill="#9ca3af">100%</text>
+          <text x="44" y="60" text-anchor="end" font-size="9" fill="#9ca3af">75%</text>
+          <text x="44" y="98" text-anchor="end" font-size="9" fill="#9ca3af">50%</text>
+          <text x="44" y="135" text-anchor="end" font-size="9" fill="#9ca3af">25%</text>
+          <text x="44" y="173" text-anchor="end" font-size="9" fill="#9ca3af">0%</text>
+          <!-- X axis labels -->
+          <text x="50" y="185" text-anchor="middle" font-size="9" fill="#9ca3af">Wk1</text>
+          <text x="96" y="185" text-anchor="middle" font-size="9" fill="#9ca3af">Wk2</text>
+          <text x="142" y="185" text-anchor="middle" font-size="9" fill="#9ca3af">Wk3</text>
+          <text x="188" y="185" text-anchor="middle" font-size="9" fill="#9ca3af">Wk4</text>
+          <text x="234" y="185" text-anchor="middle" font-size="9" fill="#9ca3af">Wk5</text>
+          <text x="280" y="185" text-anchor="middle" font-size="9" fill="#9ca3af">Wk6</text>
+          <!-- Sarah (red) — risk increasing 45→72 -->
+          <polyline points="50,103 96,92 142,83 188,74 234,68 280,62" fill="none" stroke="#dc2626" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="280" cy="62" r="4" fill="#dc2626"/>
+          <!-- Marcus (amber) — risk decreasing 55→34 -->
+          <polyline points="50,88 96,98 142,109 188,119" fill="none" stroke="#d97706" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="188" cy="119" r="4" fill="#d97706"/>
+          <!-- Priya (green) — risk decreasing 28→12 -->
+          <polyline points="50,128 96,140 142,152" fill="none" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="142" cy="152" r="4" fill="#16a34a"/>
+          <!-- Risk threshold line at 50% -->
+          <line x1="50" y1="95" x2="560" y2="95" stroke="#dc2626" stroke-width="1" stroke-dasharray="4 3" opacity=".4"/>
+          <text x="563" y="98" font-size="9" fill="#dc2626" opacity=".7">50% threshold</text>
+          <!-- Legend -->
+          <rect x="52" y="192" width="10" height="4" fill="#dc2626" rx="2"/>
+          <text x="67" y="196" font-size="9" fill="#374151">Sarah K. (High)</text>
+          <rect x="142" y="192" width="10" height="4" fill="#d97706" rx="2"/>
+          <text x="157" y="196" font-size="9" fill="#374151">Marcus R. (Medium)</text>
+          <rect x="252" y="192" width="10" height="4" fill="#16a34a" rx="2"/>
+          <text x="267" y="196" font-size="9" fill="#374151">Priya P. (Low)</text>
+        </svg>
+      </div>
+    </div><!-- /probation -->
+
+
+    <!-- ====================================================
+         MODULE 6 — CONTINUOUS LEARNING FEEDBACK LOOP
+         ==================================================== -->
+    <div id="mod-feedback" class="module">
+      <div class="mod-title">🔄 Continuous Learning Feedback Loop</div>
+      <div class="mod-sub">Every hire, training outcome, and production result recalibrates the model</div>
+
+      <!-- Circular Flow + Explainers -->
+      <div class="g2 mb-20" style="align-items:start;">
+        <div class="card" style="position:relative;">
+          <div style="font-size:13px;font-weight:700;color:var(--charcoal);margin-bottom:14px;text-align:center;">Animated Performance Feedback Loop</div>
+          <div id="r-tooltip" class="r-tooltip"></div>
+          <svg id="flow-svg" viewBox="0 0 560 480" style="width:100%;max-width:500px;display:block;margin:0 auto;">
+            <defs>
+              <marker id="ah" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+                <polygon points="0 0,8 3,0 6" fill="#7c3aed"/>
+              </marker>
+            </defs>
+            <!-- Guide circle -->
+            <circle cx="280" cy="250" r="165" fill="none" stroke="#e5e7eb" stroke-width="1.5" stroke-dasharray="5 4"/>
+            <!-- Animated arrows -->
+            <line x1="330" y1="75" x2="425" y2="162" stroke="#7c3aed" stroke-width="2" stroke-dasharray="10 5" marker-end="url(#ah)">
+              <animate attributeName="stroke-dashoffset" values="30;0" dur="1.4s" repeatCount="indefinite"/>
+            </line>
+            <line x1="456" y1="232" x2="418" y2="363" stroke="#7c3aed" stroke-width="2" stroke-dasharray="10 5" marker-end="url(#ah)">
+              <animate attributeName="stroke-dashoffset" values="30;0" dur="1.6s" repeatCount="indefinite"/>
+            </line>
+            <line x1="358" y1="415" x2="202" y2="415" stroke="#7c3aed" stroke-width="2" stroke-dasharray="10 5" marker-end="url(#ah)">
+              <animate attributeName="stroke-dashoffset" values="30;0" dur="1.2s" repeatCount="indefinite"/>
+            </line>
+            <line x1="104" y1="363" x2="66" y2="232" stroke="#7c3aed" stroke-width="2" stroke-dasharray="10 5" marker-end="url(#ah)">
+              <animate attributeName="stroke-dashoffset" values="30;0" dur="1.5s" repeatCount="indefinite"/>
+            </line>
+            <line x1="130" y1="162" x2="230" y2="75" stroke="#7c3aed" stroke-width="2" stroke-dasharray="10 5" marker-end="url(#ah)">
+              <animate attributeName="stroke-dashoffset" values="30;0" dur="1.3s" repeatCount="indefinite"/>
+            </line>
+            <!-- Correlation labels on arrows -->
+            <rect x="342" y="104" width="54" height="18" rx="9" fill="#dcfce7"/>
+            <text x="369" y="116" text-anchor="middle" font-size="9" font-weight="700" fill="#16a34a" style="cursor:pointer" onclick="showRTooltip(event,'r = 0.71 — Strong positive relationship. For every 10-point increase in hiring score, training performance improves by approximately 7 points on average.')">r = 0.71</text>
+            <rect x="400" y="293" width="54" height="18" rx="9" fill="#dcfce7"/>
+            <text x="427" y="305" text-anchor="middle" font-size="9" font-weight="700" fill="#16a34a" style="cursor:pointer" onclick="showRTooltip(event,'r = 0.68 — Agents who perform well in training consistently outperform their peers in production. Training score accounts for 68% of production variance.')">r = 0.68</text>
+            <rect x="243" y="423" width="54" height="18" rx="9" fill="#dcfce7"/>
+            <text x="270" y="435" text-anchor="middle" font-size="9" font-weight="700" fill="#16a34a" style="cursor:pointer" onclick="showRTooltip(event,'r = 0.74 — Production performance is the strongest predictor of retention outcome. High performers have 74% lower churn probability in the 18-month window.')">r = 0.74</text>
+            <rect x="61" y="283" width="60" height="18" rx="9" fill="#ede9fe"/>
+            <text x="91" y="295" text-anchor="middle" font-size="9" font-weight="700" fill="#7c3aed" style="cursor:pointer" onclick="showRTooltip(event,'Continuous recalibration — retention outcomes from each cohort are fed back into the assessment model, improving prediction accuracy with every new hire batch.')">Continuous</text>
+            <!-- NODE 1: PRE-HIRE ASSESSMENT (top) -->
+            <rect x="220" y="34" width="120" height="44" rx="10" fill="#7c3aed"/>
+            <text x="280" y="52" text-anchor="middle" font-size="9.5" font-weight="800" fill="#fff">PRE-HIRE</text>
+            <text x="280" y="66" text-anchor="middle" font-size="9.5" font-weight="800" fill="#fff">ASSESSMENT</text>
+            <!-- NODE 2: TRAINING PERFORMANCE (top-right) -->
+            <rect x="408" y="178" width="120" height="44" rx="10" fill="#2563eb"/>
+            <text x="468" y="196" text-anchor="middle" font-size="9.5" font-weight="800" fill="#fff">TRAINING</text>
+            <text x="468" y="210" text-anchor="middle" font-size="9.5" font-weight="800" fill="#fff">PERFORMANCE</text>
+            <!-- NODE 3: PRODUCTION PERFORMANCE (bottom-right) -->
+            <rect x="340" y="393" width="120" height="44" rx="10" fill="#16a34a"/>
+            <text x="400" y="411" text-anchor="middle" font-size="9.5" font-weight="800" fill="#fff">PRODUCTION</text>
+            <text x="400" y="425" text-anchor="middle" font-size="9.5" font-weight="800" fill="#fff">PERFORMANCE</text>
+            <!-- NODE 4: RETENTION OUTCOME (bottom-left) -->
+            <rect x="100" y="393" width="120" height="44" rx="10" fill="#dc2626"/>
+            <text x="160" y="411" text-anchor="middle" font-size="9.5" font-weight="800" fill="#fff">RETENTION</text>
+            <text x="160" y="425" text-anchor="middle" font-size="9.5" font-weight="800" fill="#fff">OUTCOME</text>
+            <!-- NODE 5: RECALIBRATION (top-left) -->
+            <rect x="32" y="178" width="120" height="44" rx="10" fill="#d97706"/>
+            <text x="92" y="196" text-anchor="middle" font-size="9.5" font-weight="800" fill="#fff">ASSESSMENT</text>
+            <text x="92" y="210" text-anchor="middle" font-size="9.5" font-weight="800" fill="#fff">RECALIBRATION</text>
+          </svg>
+          <div style="text-align:center;margin-top:12px;font-size:11px;color:var(--g500);">Click the r values to see what each correlation means</div>
+        </div>
+
+        <!-- Clickable r value explainers -->
+        <div class="card">
+          <div style="font-size:13px;font-weight:700;color:var(--charcoal);margin-bottom:14px;">Correlation Deep Dive</div>
+          <div style="border-left:3px solid var(--green);padding:12px;background:var(--green-l);border-radius:0 8px 8px 0;margin-bottom:10px;cursor:pointer;" onclick="showRTooltip(null,'r = 0.71 — Strong positive relationship. For every 10-point increase in hiring score, training performance improves by approximately 7 points on average.')">
+            <div style="font-size:14px;font-weight:800;color:var(--charcoal);">Hire → Training: r = 0.71</div>
+            <div style="font-size:12px;color:var(--g600);margin-top:3px;">Strong. 10-point hiring score gain = ~7-point training improvement on average.</div>
+          </div>
+          <div style="border-left:3px solid var(--blue);padding:12px;background:var(--blue-l);border-radius:0 8px 8px 0;margin-bottom:10px;">
+            <div style="font-size:14px;font-weight:800;color:var(--charcoal);">Training → Production: r = 0.68</div>
+            <div style="font-size:12px;color:var(--g600);margin-top:3px;">Strong. Training score accounts for 68% of production performance variance.</div>
+          </div>
+          <div style="border-left:3px solid var(--green);padding:12px;background:var(--green-l);border-radius:0 8px 8px 0;margin-bottom:10px;">
+            <div style="font-size:14px;font-weight:800;color:var(--charcoal);">Production → Retention: r = 0.74</div>
+            <div style="font-size:12px;color:var(--g600);margin-top:3px;">Strongest link. High performers have 74% lower churn probability over 18 months.</div>
+          </div>
+          <div style="border-left:3px solid var(--purple);padding:12px;background:var(--purple-l);border-radius:0 8px 8px 0;">
+            <div style="font-size:14px;font-weight:800;color:var(--charcoal);">Retention → Recalibration: Continuous</div>
+            <div style="font-size:12px;color:var(--g600);margin-top:3px;">Every cohort outcome improves assessment prediction accuracy. The model learns from itself.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Statistics Deep Dive -->
+      <div class="sec-h">📐 Explainable Statistics — What the Numbers Mean</div>
+      <div class="card mb-20">
+        <table class="stats-tbl">
+          <thead><tr><th style="width:20%;">Metric</th><th style="width:12%;">Value</th><th style="width:34%;">What It Means</th><th style="width:34%;">Business Interpretation</th></tr></thead>
           <tbody>
-            <tr><td style="font-weight:700;">Strongly Recommended</td><td>84</td><td style="color:var(--green);font-weight:700;">49%</td><td style="color:var(--red);font-weight:700;">51%</td><td>❌ None</td></tr>
-            <tr><td style="font-weight:700;">Recommended</td><td>76</td><td style="color:var(--green);font-weight:700;">51%</td><td style="color:var(--red);font-weight:700;">49%</td><td>❌ None</td></tr>
-            <tr><td style="font-weight:700;">Borderline</td><td>42</td><td style="color:var(--green);font-weight:700;">48%</td><td style="color:var(--red);font-weight:700;">52%</td><td>❌ None</td></tr>
-            <tr><td style="font-weight:700;">Not Recommended</td><td>22</td><td style="color:var(--green);font-weight:700;">46%</td><td style="color:var(--red);font-weight:700;">54%</td><td>❌ None</td></tr>
+            <tr><td><span class="stat-name">P Value</span></td><td><span class="stat-val">0.04</span></td><td class="stat-meaning">Only 4% probability this relationship occurred randomly</td><td class="stat-meaning">Assessment scores now reliably predict production outcomes</td></tr>
+            <tr><td><span class="stat-name">Chi-Square</span></td><td><span class="stat-val">18.7</span></td><td class="stat-meaning">Measures strength of association between assessment and performance</td><td class="stat-meaning">Strong non-random relationship confirmed across the cohort</td></tr>
+            <tr><td><span class="stat-name">Confidence Interval</span></td><td><span class="stat-val">95% CI [0.61–0.81]</span></td><td class="stat-meaning">True correlation falls within this range with 95% certainty</td><td class="stat-meaning">Results are statistically robust — not a one-time finding</td></tr>
+            <tr><td><span class="stat-name">Effect Size (Cohen d)</span></td><td><span class="stat-val">0.74</span></td><td class="stat-meaning">Large effect — assessment drives meaningful performance differences</td><td class="stat-meaning">Not just statistically significant — practically meaningful</td></tr>
+            <tr><td><span class="stat-name">AUC</span></td><td><span class="stat-val">0.87</span></td><td class="stat-meaning">Model correctly ranks candidates 87% of the time</td><td class="stat-meaning">Strong predictive model — reliable for hiring decisions</td></tr>
+            <tr><td><span class="stat-name">Model Accuracy</span></td><td><span class="stat-val">84%</span></td><td class="stat-meaning">84 of 100 predictions are correct</td><td class="stat-meaning">Reliable for hiring decisions at scale</td></tr>
+            <tr><td><span class="stat-name">Precision</span></td><td><span class="stat-val">82%</span></td><td class="stat-meaning">When model predicts pass, it is correct 82% of the time</td><td class="stat-meaning">Low false positive rate — avoids over-hiring</td></tr>
+            <tr><td><span class="stat-name">Recall</span></td><td><span class="stat-val">79%</span></td><td class="stat-meaning">Model correctly identifies 79% of all true high performers</td><td class="stat-meaning">Acceptable miss rate — balances precision with coverage</td></tr>
+            <tr><td><span class="stat-name">Sigma Level</span></td><td><span class="stat-val">3.8σ</span></td><td class="stat-meaning">Process operating at 3.8 sigma quality level</td><td class="stat-meaning">Near best-in-class hiring process — industry leader territory</td></tr>
+            <tr><td><span class="stat-name">DPMO</span></td><td><span class="stat-val">8,198</span></td><td class="stat-meaning">8,198 defective hires per million opportunities</td><td class="stat-meaning">Benchmark for continuous improvement — track quarterly</td></tr>
           </tbody>
         </table>
-        <div style="margin-top:14px;padding:10px;background:var(--red-l);border-radius:8px;font-size:13px;color:var(--red);">
-          <strong>Insight:</strong> No assessment band shows meaningful predictive ability. Top scorers and bottom scorers produce virtually identical production outcomes.
+      </div>
+
+      <!-- Model Validation + Bias Monitoring -->
+      <div class="g2 mb-20">
+        <div class="card">
+          <div class="sec-h" style="margin-top:0;">🤖 AI Model Health</div>
+          <div class="g4 mb-16" style="gap:10px;">
+            <div class="valid-card"><div class="valid-pct">87%</div><div class="valid-lbl">Prediction Accuracy</div><span class="badge b-grn" style="margin-top:6px;">Healthy</span></div>
+            <div class="valid-card"><div class="valid-pct">84%</div><div class="valid-lbl">Precision</div><span class="badge b-grn" style="margin-top:6px;">Healthy</span></div>
+            <div class="valid-card"><div class="valid-pct">82%</div><div class="valid-lbl">Recall</div><span class="badge b-grn" style="margin-top:6px;">Healthy</span></div>
+            <div class="valid-card"><div class="valid-pct" style="color:var(--green);">6%</div><div class="valid-lbl">False Positive Rate</div><span class="badge b-grn" style="margin-top:6px;">Low ✅</span></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="sec-h" style="margin-top:0;">🛡️ Bias Monitoring</div>
+          <div class="bias-row"><span class="bias-metric">Gender Bias</span><span class="badge b-grn">None Detected</span></div>
+          <div class="bias-row"><span class="bias-metric">Regional Bias</span><span class="badge b-grn">None Detected</span></div>
+          <div class="bias-row"><span class="bias-metric">Experience Bias</span><span class="badge b-amb">Low</span></div>
+          <div class="bias-row"><span class="bias-metric">Model Drift</span><span class="badge b-grn">Stable</span></div>
+          <div class="bias-row"><span class="bias-metric">Last Calibration</span><span style="font-size:12px;color:var(--g500);">14 days ago</span></div>
+          <div class="bias-row"><span class="bias-metric">Next Review</span><span style="font-size:12px;color:var(--g500);">In 16 days</span></div>
         </div>
       </div>
 
-    </div>
-  </div>
-
-  <!-- S2: Cost of Poor Hiring -->
-  <div class="sec">
-    <div class="sec-t">Cost of Poor Hiring Signal</div>
-    <div class="sec-s">Quantified business impact of assessment without predictive validity</div>
-    <div class="g3">
-      <div class="card" style="border-left:4px solid var(--red);">
-        <div style="font-size:34px;font-weight:900;color:var(--red);margin-bottom:6px;">44%</div>
-        <div style="font-size:14px;font-weight:800;color:var(--g800);margin-bottom:6px;">below quality threshold</div>
-        <div style="font-size:13px;color:var(--g500);margin-bottom:12px;">Nearly double the 20–23% industry norm for bottom-quartile agent rates</div>
-        <span class="badge b-red">High Risk</span>
-      </div>
-      <div class="card" style="border-left:4px solid var(--red);">
-        <div style="font-size:34px;font-weight:900;color:var(--red);margin-bottom:6px;">30%</div>
-        <div style="font-size:14px;font-weight:800;color:var(--g800);margin-bottom:6px;">retraining failure rate</div>
-        <div style="font-size:13px;color:var(--g500);margin-bottom:12px;">Agents with 19 months tenure could not reach production standard despite retraining</div>
-        <span class="badge b-red">Chronic Issue</span>
-      </div>
-      <div class="card" style="border-left:4px solid var(--red);">
-        <div style="font-size:34px;font-weight:900;color:var(--red);margin-bottom:6px;">12–16</div>
-        <div style="font-size:14px;font-weight:800;color:var(--g800);margin-bottom:6px;">weeks wasted per failed hire</div>
-        <div style="font-size:13px;color:var(--g500);margin-bottom:12px;">Full onboarding and ramp-up cost incurred before identifying below-standard agents</div>
-        <span class="badge b-red">Cost Drag</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- S3: AI Assessment Pipeline -->
-  <div class="sec">
-    <div class="sec-t">AI-Powered Assessment Built on Real Production Data</div>
-    <div class="sec-s">Four-stage pipeline transforms call transcripts into validated hiring signal</div>
-    <div class="card">
-      <div class="flow-wrap">
-        <div class="fn-box"><div class="fn-bub">1</div><div class="fn-t">Real Call Transcripts</div><div class="fn-d">Anonymised production calls ingested at scale</div></div>
-        <div class="fa"><div class="fa-line"></div></div>
-        <div class="fn-box"><div class="fn-bub">2</div><div class="fn-t">Top Intents Extracted</div><div class="fn-d">Late Fee · AutoPay · Damaged Device · Port-Out</div></div>
-        <div class="fa"><div class="fa-line"></div></div>
-        <div class="fn-box"><div class="fn-bub">3</div><div class="fn-t">Scenarios Generated</div><div class="fn-d">Calibrated to actual production complexity</div></div>
-        <div class="fa"><div class="fa-line"></div></div>
-        <div class="fn-box"><div class="fn-bub">4</div><div class="fn-t">Scored vs Top Performers</div><div class="fn-d">Pass threshold at 50th percentile of top agents</div></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- S4: Live Simulator -->
-  <div class="sec">
-    <div class="sec-t">Live Assessment Simulator</div>
-    <div class="sec-s">Experience the AI-powered scenario assessment — select a scenario and respond as the agent</div>
-    <div class="card">
-      <label style="font-size:13px;font-weight:700;color:var(--g700);display:block;margin-bottom:6px;">Select Call Scenario</label>
-      <select id="sim-sel" onchange="onScenarioChange()" style="margin-bottom:14px;">
-        <option value="">— Choose a call scenario —</option>
-        <option value="late-fee">Late Fee Dispute</option>
-        <option value="autopay">AutoPay Cancellation</option>
-        <option value="damaged">Damaged Device</option>
-        <option value="port-out">Port-Out Prevention</option>
-        <option value="network">Network Complaint</option>
-        <option value="bill-shock">Bill Shock</option>
-      </select>
-
-      <div id="sim-callout" style="display:none;" class="s-callout">
-        <div class="slbl">Customer Statement</div>
-        <div id="sim-txt" class="stxt"></div>
-      </div>
-
-      <textarea id="sim-resp" placeholder="Type your response as the agent..." style="margin-bottom:12px;"></textarea>
-      <button class="btn btn-pur" onclick="runAssessment()">Score My Response</button>
-
-      <div id="sim-result" style="display:none;margin-top:22px;" class="score-panel">
-        <div style="font-size:15px;font-weight:800;color:var(--g800);margin-bottom:14px;">Assessment Results</div>
-        <div id="sim-metrics"></div>
-        <div id="sim-badge" style="display:flex;align-items:center;gap:14px;margin:16px 0;"></div>
-        <div style="background:var(--blue-l);border-left:3px solid var(--blue);padding:13px;border-radius:8px;font-size:13px;color:var(--g700);">
-          <strong style="color:var(--blue);">AI Feedback:</strong> Strong empathy acknowledgment detected. Recommend leading with resolution before policy explanation. Benchmark agents resolve within 90 seconds on this intent type.
+      <!-- Cohort Tracking Table -->
+      <div class="sec-h">Agent Cohort — Full Performance Tracking</div>
+      <div class="card mb-20">
+        <div class="tbl-wrap">
+          <table class="tbl">
+            <thead><tr><th>Cohort</th><th>System</th><th>Hire Score</th><th>Training Score</th><th>Resolution %</th><th>Sentiment</th><th>Churn Risk</th></tr></thead>
+            <tbody>
+              <tr class="row-ai"><td><strong>Cohort A</strong></td><td><span class="badge b-grn">AI System</span></td><td style="font-weight:700;">82nd %ile</td><td style="color:var(--green);font-weight:800;">78/100</td><td style="color:var(--green);font-weight:800;">87%</td><td><span class="badge b-grn">Positive</span></td><td>🟢 Low</td></tr>
+              <tr class="row-ai"><td><strong>Cohort B</strong></td><td><span class="badge b-grn">AI System</span></td><td style="font-weight:700;">71st %ile</td><td style="color:var(--green);font-weight:800;">72/100</td><td style="color:var(--green);font-weight:800;">81%</td><td><span class="badge b-grn">Positive</span></td><td>🟢 Low</td></tr>
+              <tr class="row-leg"><td><strong>Cohort C</strong></td><td><span class="badge b-amb">Legacy</span></td><td style="font-weight:700;">Top Band</td><td style="color:var(--amber);font-weight:800;">61/100</td><td style="color:var(--amber);font-weight:800;">64%</td><td><span class="badge b-amb">Neutral</span></td><td>🟡 Medium</td></tr>
+              <tr class="row-leg"><td><strong>Cohort D</strong></td><td><span class="badge b-amb">Legacy</span></td><td style="font-weight:700;">Top Band</td><td style="color:var(--red);font-weight:800;">58/100</td><td style="color:var(--red);font-weight:800;">59%</td><td><span class="badge b-red">Negative</span></td><td>🔴 High</td></tr>
+              <tr class="row-ret"><td><strong>Cohort E</strong></td><td><span class="badge b-pur">Retrained</span></td><td style="color:var(--g400);">N/A</td><td style="color:var(--amber);font-weight:800;">69/100</td><td style="color:var(--amber);font-weight:800;">71%</td><td><span class="badge b-grn">Positive</span></td><td>🟡 Medium</td></tr>
+            </tbody>
+          </table>
         </div>
       </div>
-    </div>
-  </div>
 
-  <!-- S5: New System Results -->
-  <div class="sec">
-    <div class="sec-t">AI Assessment System — Validation Results</div>
-    <div class="sec-s">Chi-Square analysis confirms strong predictive validity in new system</div>
-    <div class="card">
-      <table class="tbl">
-        <thead><tr><th>Band</th><th>Agents</th><th>Top Quartile</th><th>Bottom Quartile</th><th>Signal</th></tr></thead>
-        <tbody>
-          <tr style="background:var(--green-l);"><td style="font-weight:800;">Pass — above 50th %ile</td><td>67</td><td style="color:var(--green);font-weight:800;">78%</td><td style="color:var(--red);font-weight:700;">22%</td><td>✅ Strong</td></tr>
-          <tr style="background:var(--red-l);"><td style="font-weight:800;">Fail — below 50th %ile</td><td>31</td><td style="color:var(--green);font-weight:700;">24%</td><td style="color:var(--red);font-weight:800;">76%</td><td>✅ Strong</td></tr>
-        </tbody>
-      </table>
-      <div style="margin-top:14px;display:flex;justify-content:flex-end;">
-        <span class="badge b-grn" style="font-size:13px;padding:7px 18px;">p = 0.04 — Statistically Significant</span>
-      </div>
-    </div>
-  </div>
-
-</div><!-- /pane-hiring -->
-
-
-<!-- ================================================================
-     TAB 2 — TRAINING PERFORMANCE
-     ================================================================ -->
-<div id="pane-training" class="pane">
-
-  <!-- S1: Improvement Summary -->
-  <div class="sec">
-    <div class="sec-t">Training Performance — Improvement Summary</div>
-    <div class="sec-s">AI-powered training versus legacy approach — four headline metrics</div>
-    <div class="g4">
-      <div class="card" style="border-left:4px solid var(--green);">
-        <div style="font-size:12px;font-weight:700;color:var(--g500);margin-bottom:8px;text-transform:uppercase;">Bottom-Quartile Ratio</div>
-        <div style="font-size:22px;font-weight:900;color:var(--green);margin-bottom:8px;">44% → 22%</div>
-        <span class="badge b-grn">50% improvement</span>
-      </div>
-      <div class="card" style="border-left:4px solid var(--green);">
-        <div style="font-size:12px;font-weight:700;color:var(--g500);margin-bottom:8px;text-transform:uppercase;">Graduation Failure</div>
-        <div style="font-size:22px;font-weight:900;color:var(--green);margin-bottom:8px;">30% → 11%</div>
-        <span class="badge b-grn">63% improvement</span>
-      </div>
-      <div class="card" style="border-left:4px solid var(--green);">
-        <div style="font-size:12px;font-weight:700;color:var(--g500);margin-bottom:8px;text-transform:uppercase;">Ramp Time</div>
-        <div style="font-size:22px;font-weight:900;color:var(--green);margin-bottom:8px;">16w → 8w</div>
-        <span class="badge b-grn">50% faster</span>
-      </div>
-      <div class="card" style="border-left:4px solid var(--green);">
-        <div style="font-size:12px;font-weight:700;color:var(--g500);margin-bottom:8px;text-transform:uppercase;">Unresolved Call Rate</div>
-        <div style="font-size:22px;font-weight:900;color:var(--green);margin-bottom:8px;">↓ 8–12pp</div>
-        <span class="badge b-grn">Measurable reduction</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- S2: Funnel Comparison -->
-  <div class="sec">
-    <div class="sec-t">Training Funnel Comparison</div>
-    <div class="sec-s">Legacy system cohort vs AI system new hire cohort</div>
-    <div class="g2">
+      <!-- Impact Summary -->
+      <div class="sec-h">Performance Transformation — Before vs After</div>
       <div class="card">
-        <div style="font-size:15px;font-weight:800;color:var(--g700);text-align:center;margin-bottom:20px;">Legacy System — 195 Agent Cohort</div>
-        <div class="funnel">
-          <div class="funnel-box" style="width:100%;background:var(--g100);border:2px solid var(--g300);color:var(--g700);">195 Enrolled</div>
-          <div class="funnel-dn">↓</div>
-          <div class="funnel-box" style="width:88%;background:var(--amber-l);border:2px solid var(--amber);color:#92400e;">136 Completed <strong>(70%)</strong></div>
-          <div class="funnel-dn">↓</div>
-          <div class="funnel-box" style="width:60%;background:var(--red-l);border:2px solid var(--red);color:var(--red);">59 Failed to Graduate <strong>(30%)</strong></div>
+        <div class="tbl-wrap">
+          <table class="tbl">
+            <thead><tr><th>Metric</th><th>Before</th><th>After</th><th>Change</th></tr></thead>
+            <tbody>
+              <tr><td style="font-weight:700;">Assessment-to-production correlation</td><td class="td-b">p = 0.828</td><td class="td-a">p = 0.04</td><td>✅ Now predictive</td></tr>
+              <tr><td style="font-weight:700;">Bottom-quartile agent ratio</td><td class="td-b">44%</td><td class="td-a">22%</td><td>✅ 50% reduction</td></tr>
+              <tr><td style="font-weight:700;">Training graduation failure</td><td class="td-b">30%</td><td class="td-a">11%</td><td>✅ 63% improvement</td></tr>
+              <tr><td style="font-weight:700;">Unresolved call rate</td><td class="td-b">50–64%</td><td class="td-a">Reduced 8–12pp</td><td>✅ Measurable improvement</td></tr>
+              <tr><td style="font-weight:700;">Service interactions deflected</td><td class="td-b">Baseline</td><td class="td-a">600K+</td><td>✅ Achieved</td></tr>
+              <tr><td style="font-weight:700;">Hire-to-production ramp</td><td class="td-b">16 weeks</td><td class="td-a">Under 8 weeks</td><td>✅ 50% faster</td></tr>
+              <tr><td style="font-weight:700;">Hiring accuracy</td><td class="td-b">No signal (p=0.828)</td><td class="td-a">+47% improvement</td><td>✅ Transformative</td></tr>
+              <tr><td style="font-weight:700;">Annual estimated savings</td><td class="td-b">—</td><td class="td-a">$2.4M</td><td>✅ Quantified impact</td></tr>
+            </tbody>
+          </table>
         </div>
       </div>
-      <div class="card">
-        <div style="font-size:15px;font-weight:800;color:var(--g700);text-align:center;margin-bottom:20px;">AI System — New Hire Cohort</div>
-        <div class="funnel">
-          <div class="funnel-box" style="width:100%;background:var(--g100);border:2px solid var(--g300);color:var(--g700);">Cohort Enrolled</div>
-          <div class="funnel-dn">↓</div>
-          <div class="funnel-box" style="width:90%;background:var(--green-l);border:2px solid var(--green);color:#166534;">89% Completed</div>
-          <div class="funnel-dn">↓</div>
-          <div class="funnel-box" style="width:33%;background:var(--amber-l);border:2px solid var(--amber);color:#92400e;">11% Failed <strong>(Amber)</strong></div>
-        </div>
-        <div style="text-align:center;margin-top:18px;">
-          <span class="badge b-grn" style="font-size:13px;padding:7px 16px;">63% improvement in graduation rates</span>
-        </div>
-      </div>
-    </div>
+
+    </div><!-- /feedback -->
+
+  </div><!-- /content-area -->
+</div><!-- /main-area -->
+
+<!-- ======================================================
+     CANDIDATE MODAL
+     ====================================================== -->
+<div id="modal-overlay" class="modal-overlay" onclick="closeModal(event)">
+  <div class="modal-card">
+    <button class="modal-close" onclick="closeModal(true)">✕</button>
+    <div id="modal-body"></div>
   </div>
+</div>
 
-  <!-- S3: Dynamic Training Module -->
-  <div class="sec">
-    <div class="sec-t">Dynamic Training Content Engine</div>
-    <div class="sec-s">Scenarios generated from real production call patterns — select an intent type to explore</div>
-    <div class="card">
-      <div class="pills">
-        <button class="pill on" onclick="switchTrain('late-fee',this)">Late Fee</button>
-        <button class="pill"    onclick="switchTrain('autopay',this)">AutoPay</button>
-        <button class="pill"    onclick="switchTrain('damaged',this)">Damaged Device</button>
-        <button class="pill"    onclick="switchTrain('port-out',this)">Port-Out</button>
-        <button class="pill"    onclick="switchTrain('network',this)">Network</button>
-        <button class="pill"    onclick="switchTrain('bill-shock',this)">Bill Shock</button>
-      </div>
-      <div id="train-content"></div>
-      <div style="border-top:1px solid var(--g200);margin-top:20px;padding-top:18px;">
-        <div style="font-size:14px;font-weight:700;color:var(--g700);margin-bottom:8px;">Practice Your Response</div>
-        <textarea id="train-resp" placeholder="Practice your response here..."></textarea>
-        <button class="btn btn-pur" style="margin-top:10px;" onclick="showTrainFeedback()">Get AI Feedback</button>
-      </div>
-      <div id="train-fb" style="display:none;margin-top:16px;" class="score-panel">
-        <div style="background:var(--green-l);border-left:3px solid var(--green);padding:12px;border-radius:8px;margin-bottom:8px;font-size:13px;">
-          <strong style="color:var(--green);">What worked:</strong> Clear acknowledgment of customer frustration. Offered resolution pathway early in the conversation.
-        </div>
-        <div style="background:var(--amber-l);border-left:3px solid var(--amber);padding:12px;border-radius:8px;margin-bottom:8px;font-size:13px;">
-          <strong style="color:var(--amber);">What to improve:</strong> Avoid leading with policy. Personalise using account history before presenting options.
-        </div>
-        <div style="background:var(--blue-l);border-left:3px solid var(--blue);padding:12px;border-radius:8px;font-size:13px;">
-          <strong style="color:var(--blue);">Benchmark insight:</strong> Top-quartile agents on this intent type resolve in under 90 seconds with one empathy statement and two solution options.
-        </div>
-      </div>
-    </div>
-  </div>
+<!-- FOOTER -->
+<div style="display:none;">Built by Raymond Pius | AI Hiring and Training Intelligence Platform | Workforce Decision Intelligence</div>
 
-  <!-- S4: Archetype Training Paths -->
-  <div class="sec">
-    <div class="sec-t">Agent Archetype Training Paths</div>
-    <div class="sec-s">Tailored development tracks based on identified customer interaction patterns</div>
-    <div class="g3">
-      <div class="card" style="border-left:4px solid var(--red);">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
-          <div style="width:38px;height:38px;background:var(--red-l);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">😤</div>
-          <div><div style="font-size:15px;font-weight:800;">Onboarding Frustrated</div><span class="badge b-red">Empathy &amp; Process Speed</span></div>
-        </div>
-        <div style="font-size:13px;color:var(--g700);margin-bottom:10px;"><strong>Key skills:</strong> Active listening, rapid resolution, de-escalation</div>
-        <div style="font-size:13px;color:var(--g700);margin-bottom:12px;padding:8px;background:var(--red-l);border-radius:6px;"><strong>Top failure mode:</strong> Over-explaining policy before acknowledging frustration</div>
-        <div style="font-size:13px;color:var(--g700);padding:8px;background:var(--g50);border-radius:6px;">🎯 Target: under <strong>4 minutes</strong> resolution</div>
-      </div>
-      <div class="card" style="border-left:4px solid var(--amber);">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
-          <div style="width:38px;height:38px;background:var(--amber-l);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">💰</div>
-          <div><div style="font-size:15px;font-weight:800;">Price Sensitive</div><span class="badge b-amb">Value Articulation</span></div>
-        </div>
-        <div style="font-size:13px;color:var(--g700);margin-bottom:10px;"><strong>Key skills:</strong> Competitive positioning, offer eligibility, savings calculation</div>
-        <div style="font-size:13px;color:var(--g700);margin-bottom:12px;padding:8px;background:var(--amber-l);border-radius:6px;"><strong>Top failure mode:</strong> Offering discounts without understanding real objection</div>
-        <div style="font-size:13px;color:var(--g700);padding:8px;background:var(--g50);border-radius:6px;">🎯 Target: under <strong>6 minutes</strong> resolution</div>
-      </div>
-      <div class="card" style="border-left:4px solid var(--blue);">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
-          <div style="width:38px;height:38px;background:var(--blue-l);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">📡</div>
-          <div><div style="font-size:15px;font-weight:800;">Network Skeptic</div><span class="badge b-blu">Technical Resolution</span></div>
-        </div>
-        <div style="font-size:13px;color:var(--g700);margin-bottom:10px;"><strong>Key skills:</strong> Diagnostic questioning, ticket creation, expectation setting</div>
-        <div style="font-size:13px;color:var(--g700);margin-bottom:12px;padding:8px;background:var(--blue-l);border-radius:6px;"><strong>Top failure mode:</strong> Promising resolution timelines that cannot be met</div>
-        <div style="font-size:13px;color:var(--g700);padding:8px;background:var(--g50);border-radius:6px;">🎯 Target: under <strong>5 minutes</strong> resolution</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- S5: Real-Time Agent Assist -->
-  <div class="sec">
-    <div class="sec-t">In-Call AI Assist — Real-Time Decision Support</div>
-    <div class="sec-s">AI surfaces next best action so agents focus on the customer</div>
-    <div class="g2">
-      <div class="card">
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;">
-          <span class="ldot"></span>
-          <span style="font-size:14px;font-weight:800;color:var(--g700);">Live Call Transcript</span>
-        </div>
-        <div id="transcript-box" class="transcript-scroll"></div>
-      </div>
-      <div class="assist-dark">
-        <h4>AI Assist — Real-Time Analysis</h4>
-        <div id="assist-panel">
-          <div class="a-row"><div class="a-lbl">Status</div><div class="a-val">Waiting for call data…</div></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-</div><!-- /pane-training -->
-
-
-<!-- ================================================================
-     TAB 3 — PERFORMANCE FEEDBACK LOOP
-     ================================================================ -->
-<div id="pane-feedback" class="pane">
-
-  <!-- S1: Closed Loop Visualization -->
-  <div class="sec">
-    <div class="sec-t">Closed Performance Feedback Loop</div>
-    <div class="sec-s">Hire score predicts training outcome which predicts production performance</div>
-    <div class="card" style="padding:36px 32px;">
-      <div class="loop-diagram">
-
-        <!-- Top row: PRE-HIRE → TRAINING → PRODUCTION -->
-        <div class="loop-top-row">
-          <div class="loop-node" style="background:var(--purple);">PRE-HIRE<br>ASSESSMENT<br>SCORE</div>
-          <div class="loop-h-arrow">
-            <span class="badge b-grn loop-corr">r = 0.71</span>
-            <div class="loop-h-line fwd"></div>
-          </div>
-          <div class="loop-node" style="background:var(--blue);">TRAINING<br>PERFORMANCE<br>SCORE</div>
-          <div class="loop-h-arrow">
-            <span class="badge b-grn loop-corr">r = 0.68</span>
-            <div class="loop-h-line fwd"></div>
-          </div>
-          <div class="loop-node" style="background:var(--green);">PRODUCTION<br>PERFORMANCE</div>
-        </div>
-
-        <!-- Vertical spacers with arrows -->
-        <div class="loop-verts">
-          <div class="loop-vert">
-            <div style="font-size:20px;color:var(--purple);line-height:1;">↑</div>
-            <div class="loop-vert-line" style="background:var(--purple);"></div>
-          </div>
-          <div class="loop-vert">
-            <div class="loop-vert-line" style="background:var(--green);"></div>
-            <div style="font-size:20px;color:var(--green);line-height:1;">↓</div>
-            <span class="badge b-grn" style="margin-top:6px;font-size:11px;">r = 0.74</span>
-          </div>
-        </div>
-
-        <!-- Bottom row: CALIBRATION ← CHURN (loop back) -->
-        <div class="loop-bot-row">
-          <div class="loop-node" style="background:var(--amber);">ASSESSMENT<br>CALIBRATION<br>UPDATE</div>
-          <div class="loop-h-arrow">
-            <div class="loop-h-line bwd"></div>
-          </div>
-          <div class="loop-node" style="background:var(--red);">CHURN<br>CORRELATION<br>BY COHORT</div>
-          <div style="flex:1;"></div>
-          <div style="width:148px;"></div>
-        </div>
-
-      </div>
-      <div style="text-align:center;margin-top:28px;">
-        <span class="badge b-pur" style="font-size:12px;padding:6px 18px;">Continuous improvement loop — every cohort refines the model</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- S2: Cohort Tracking -->
-  <div class="sec">
-    <div class="sec-t">Agent Cohort — Full Performance Tracking</div>
-    <div class="card">
-      <table class="tbl">
-        <thead>
-          <tr><th>Cohort</th><th>System</th><th>Hire Score</th><th>Training Score</th><th>Resolution %</th><th>Sentiment</th><th>Churn Risk</th></tr>
-        </thead>
-        <tbody>
-          <tr class="row-ai">
-            <td><strong>Cohort A</strong></td>
-            <td><span class="badge b-grn">AI System</span></td>
-            <td style="font-weight:700;">82nd %ile</td>
-            <td style="color:var(--green);font-weight:800;">78/100</td>
-            <td style="color:var(--green);font-weight:800;">87%</td>
-            <td><span class="badge b-grn">Positive</span></td>
-            <td>🟢 Low</td>
-          </tr>
-          <tr class="row-ai">
-            <td><strong>Cohort B</strong></td>
-            <td><span class="badge b-grn">AI System</span></td>
-            <td style="font-weight:700;">71st %ile</td>
-            <td style="color:var(--green);font-weight:800;">72/100</td>
-            <td style="color:var(--green);font-weight:800;">81%</td>
-            <td><span class="badge b-grn">Positive</span></td>
-            <td>🟢 Low</td>
-          </tr>
-          <tr class="row-leg">
-            <td><strong>Cohort C</strong></td>
-            <td><span class="badge b-amb">Legacy</span></td>
-            <td style="font-weight:700;">Top Band</td>
-            <td style="color:var(--amber);font-weight:800;">61/100</td>
-            <td style="color:var(--amber);font-weight:800;">64%</td>
-            <td><span class="badge b-amb">Neutral</span></td>
-            <td>🟡 Medium</td>
-          </tr>
-          <tr class="row-leg">
-            <td><strong>Cohort D</strong></td>
-            <td><span class="badge b-amb">Legacy</span></td>
-            <td style="font-weight:700;">Top Band</td>
-            <td style="color:var(--red);font-weight:800;">58/100</td>
-            <td style="color:var(--red);font-weight:800;">59%</td>
-            <td><span class="badge b-red">Negative</span></td>
-            <td>🔴 High</td>
-          </tr>
-          <tr class="row-ret">
-            <td><strong>Cohort E</strong></td>
-            <td><span class="badge b-pur">Retrained</span></td>
-            <td style="color:var(--g400);">N/A</td>
-            <td style="color:var(--amber);font-weight:800;">69/100</td>
-            <td style="color:var(--amber);font-weight:800;">71%</td>
-            <td><span class="badge b-grn">Positive</span></td>
-            <td>🟡 Medium</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <!-- S3: Full Impact Table -->
-  <div class="sec">
-    <div class="sec-t">Performance Transformation — Before vs After</div>
-    <div class="card">
-      <table class="tbl">
-        <thead><tr><th>Metric</th><th>Before</th><th>After</th><th>Change</th></tr></thead>
-        <tbody>
-          <tr><td style="font-weight:700;">Assessment-to-production correlation</td><td class="td-b">p = 0.828</td><td class="td-a">p = 0.04</td><td>✅ Now predictive</td></tr>
-          <tr><td style="font-weight:700;">Bottom-quartile agent ratio</td><td class="td-b">44%</td><td class="td-a">22%</td><td>✅ 50% reduction</td></tr>
-          <tr><td style="font-weight:700;">Training graduation failure</td><td class="td-b">30%</td><td class="td-a">11%</td><td>✅ 63% improvement</td></tr>
-          <tr><td style="font-weight:700;">Unresolved call rate</td><td class="td-b">50–64%</td><td class="td-a">Reduced 8–12pp</td><td>✅ Measurable improvement</td></tr>
-          <tr><td style="font-weight:700;">Service interactions deflected</td><td class="td-b">Baseline</td><td class="td-a">600K+</td><td>✅ Achieved</td></tr>
-          <tr><td style="font-weight:700;">Hire-to-production ramp</td><td class="td-b">16 weeks</td><td class="td-a">Under 8 weeks</td><td>✅ 50% faster</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-</div><!-- /pane-feedback -->
-
-</div><!-- /main -->
-
-<footer class="footer">Built by Raymond Pius | AI Hiring and Training Intelligence Agent</footer>
-
-<!-- ================================================================
+<!-- ======================================================
      JAVASCRIPT
-     ================================================================ -->
+     ====================================================== -->
 <script>
+
 /* ---- DATA ---- */
-const SIM_SCENARIOS = {
-  'late-fee':   'I was charged a $35 late fee but I set up autopay. I want this removed immediately or I am leaving.',
-  'autopay':    'I cancelled my autopay because my bill keeps changing. Now I am getting late fees. This needs to be fixed.',
-  'damaged':    'My phone stopped working after a software update. I need a replacement. I have been a customer for 6 years.',
-  'port-out':   'I am porting my number to a competitor today. Their plan is $30 cheaper and I am done with this service.',
-  'network':    'My data barely works. I have had network issues for 3 weeks and nobody has fixed it.',
-  'bill-shock': 'My bill is $47 higher than last month. Nobody told me about these charges. I want an explanation.'
-};
-
-const TRAIN_DATA = {
-  'late-fee': {
-    desc: 'Customer has been charged a late fee despite having set up autopay. They are frustrated and threatening to leave.',
-    emotion: 'Frustrated', ebadge: 'b-red',
-    signals: ['Mentions autopay setup — likely an account configuration error', 'Threatening to leave — immediate churn risk flagged', 'Tone: urgent and wronged — needs resolution, not explanation'],
-    steps: ['Acknowledge immediately: "That should not have happened — let me fix this right now"', 'Pull up autopay status and transaction history in real time', 'Waive the fee proactively and confirm autopay is reactivated before ending the call'],
-    mistake: 'Asking the customer to re-explain or leading with policy before apologising',
-    top: 'Top agents apologise within 10 seconds, confirm the error on screen, and waive the fee without being asked — resolution under 3 minutes.'
-  },
-  'autopay': {
-    desc: 'Customer cancelled autopay due to inconsistent billing and is now receiving late fees they want reversed.',
-    emotion: 'Confused', ebadge: 'b-amb',
-    signals: ['Billing variability concern — review recent charges line by line', 'Customer took proactive action (cancellation) — they feel justified', 'Late fees now layered on top — compounding frustration'],
-    steps: ['Validate: "Changing bills without explanation are confusing — that is on us"', 'Break down the bill to explain the variability (usage, promo expiry, plan change)', 'Offer autopay with a bill cap or move to a fixed plan to remove future uncertainty'],
-    mistake: 'Defending the billing structure before explaining it clearly',
-    top: 'Top agents break down the bill line-by-line in under 90 seconds and proactively offer a fixed monthly option — zero callbacks on this intent type.'
-  },
-  'damaged': {
-    desc: 'Long-tenure customer\'s phone stopped working after a software update. They are requesting a replacement device.',
-    emotion: 'Frustrated', ebadge: 'b-red',
-    signals: ['6-year tenure — loyalty must be explicitly acknowledged first', 'Software update link — may qualify for warranty or goodwill replacement', 'Replacement expectation already set — do not immediately deny or deflect'],
-    steps: ['Acknowledge loyalty: "Six years with us — that genuinely matters and we want to make this right"', 'Check warranty status and device protection eligibility in real time', 'Confirm replacement or escalate with same-day callback commitment'],
-    mistake: 'Jumping to cost or policy eligibility before acknowledging the customer\'s tenure',
-    top: 'Top agents affirm loyalty in the first sentence, run eligibility silently, and confirm the outcome before ending — zero follow-up contacts.'
-  },
-  'port-out': {
-    desc: 'Customer is actively porting their number to a competitor who offers a plan $30 per month cheaper.',
-    emotion: 'Resigned', ebadge: 'b-amb',
-    signals: ['Active port-out in progress — churn is imminent without immediate intervention', '"$30 cheaper" — a specific and addressable price gap', 'Resigned tone — the customer has decided and needs a reason to reverse it'],
-    steps: ['Acknowledge their decision calmly without being defensive or asking why', 'Present a specific counter-offer that matches or beats the $30 gap immediately', 'Create urgency: confirm savings apply today and walk through the comparison live'],
-    mistake: 'Asking why they want to leave instead of immediately presenting a matched retention offer',
-    top: 'Top agents skip discovery and lead with a matched offer within 30 seconds. Conversion rate on active port-outs: 38%.'
-  },
-  'network': {
-    desc: 'Customer has experienced unresolved network issues for 3 weeks and has already made prior contact without resolution.',
-    emotion: 'Angry', ebadge: 'b-red',
-    signals: ['Three-week duration — at minimum a second contact, trust is already damaged', 'Prior contacts went unresolved — do not ask them to repeat the history', '"Thinking about switching" — churn signal embedded in the complaint'],
-    steps: ['Acknowledge the failure directly: "Three weeks without resolution is not acceptable — I own this"', 'Run live network diagnostics and escalate to a priority engineering ticket immediately', 'Commit to a callback within 24 hours with a specific ticket reference — no vague timelines'],
-    mistake: 'Promising resolution timelines that cannot be guaranteed or running the same diagnostic as the last agent',
-    top: 'Top agents create a priority ticket live, read the number back, and schedule a proactive callback — no open loops when they disconnect.'
-  },
-  'bill-shock': {
-    desc: "Customer's bill is $47 higher than last month with no explanation or prior notification received.",
-    emotion: 'Confused', ebadge: 'b-amb',
-    signals: ['Specific amount ($47) — precise complaint that can be traced to a single charge', 'No notification received — this is a communication failure', 'Demanding explanation — this is an information need, not just an emotional one'],
-    steps: ['Pull up the bill comparison immediately: last month vs current — do not ask them to describe it', 'Identify the exact line item causing the $47 increase and name it clearly', 'Offer a one-time credit if the increase was not communicated in advance — own the process failure'],
-    mistake: 'Reading out line items without explaining what caused the increase in plain language',
-    top: 'Top agents identify the root cause in under 60 seconds and offer a credit before the customer asks — first call resolution: 91%.'
-  }
-};
-
-const TRANSCRIPT_MSGS = [
-  { time:'0:08', speaker:'Customer', text:'I am having terrible network issues. My data barely works.',            cls:'msg-c' },
-  { time:'0:15', speaker:'Agent',    text:'I understand. Let me pull up your account right away.',                 cls:'msg-a' },
-  { time:'0:22', speaker:'Customer', text:'This has been going on for weeks. I am thinking about switching.',      cls:'msg-c' },
-  { time:'0:31', speaker:'Customer', text:'I already looked at a competitor. Their network is better in my area.', cls:'msg-c' },
-  { time:'0:45', speaker:'Customer', text:'If this is not fixed today I am cancelling.',                          cls:'msg-c' }
+const CANDIDATES = [
+  { id:1, ini:'JS', name:'John Smith',     asc:82, sim:78, conf:84, risk:'Low',    rtype:'b-grn', grad:89, rt:'pass', ramp:7,  prod:86,
+    strengths:['Empathy Leadership','Active Listening','Resolution Speed'],
+    weaknesses:['Policy Detail','Billing Complexity'],
+    rec:'✅ Hire — Coaching Path B',
+    recNote:'Assign to Coaching Path B focusing on billing policy and complex escalations. Ready for production in 7 weeks.' },
+  { id:2, ini:'SJ', name:'Sarah Johnson',  asc:71, sim:72, conf:76, risk:'Low',    rtype:'b-grn', grad:82, rt:'pass', ramp:8,  prod:79,
+    strengths:['Communication Clarity','Process Adherence','Customer Focus'],
+    weaknesses:['Escalation Handling'],
+    rec:'✅ Hire — Standard Path',
+    recNote:'Standard onboarding path. No significant gaps. Monitor escalation handling in weeks 4–6.' },
+  { id:3, ini:'MC', name:'Michael Chen',   asc:58, sim:61, conf:64, risk:'Medium', rtype:'b-amb', grad:71, rt:'warn', ramp:10, prod:68,
+    strengths:['Technical Knowledge','Policy Recall'],
+    weaknesses:['Empathy Signals','De-escalation Technique'],
+    rec:'⚠️ Hire with Monitoring',
+    recNote:'Hire with weekly coaching check-ins. Empathy gap is the primary risk. Assign mentor in weeks 1–4.' },
+  { id:4, ini:'EW', name:'Emma Williams',  asc:45, sim:54, conf:52, risk:'High',   rtype:'b-red', grad:58, rt:'fail', ramp:14, prod:51,
+    strengths:['Communication Clarity'],
+    weaknesses:['Empathy','Resolution Speed','Policy Handling'],
+    rec:'❌ Do Not Hire',
+    recNote:'Three simultaneous gaps with low simulation score. Predicted failure probability 73%. Do not proceed without retesting in 60 days.' },
+  { id:5, ini:'DB', name:'David Brown',    asc:79, sim:76, conf:81, risk:'Low',    rtype:'b-grn', grad:87, rt:'pass', ramp:7,  prod:84,
+    strengths:['De-escalation','Empathy','Resolution Speed'],
+    weaknesses:['Technical Depth'],
+    rec:'✅ Hire — Coaching Path A',
+    recNote:'Strong empathy profile. Coaching Path A adds technical billing knowledge. Production-ready in 7 weeks.' },
+  { id:6, ini:'LM', name:'Lisa Martinez',  asc:63, sim:68, conf:71, risk:'Medium', rtype:'b-amb', grad:76, rt:'pass', ramp:9,  prod:73,
+    strengths:['Communication','Empathy Baseline','Billing Knowledge'],
+    weaknesses:['Escalation Protocol'],
+    rec:'✅ Hire — Standard Path',
+    recNote:'Good all-round candidate. Escalation protocol is the only notable gap — addressable in weeks 3–5.' },
+  { id:7, ini:'JW', name:'James Wilson',   asc:41, sim:49, conf:47, risk:'High',   rtype:'b-red', grad:52, rt:'fail', ramp:15, prod:44,
+    strengths:['Persistence'],
+    weaknesses:['Empathy','Resolution Quality','Policy Handling'],
+    rec:'❌ Do Not Hire',
+    recNote:'Below threshold across all critical dimensions. 79% predicted failure rate. Recommend rejection at this time.' },
+  { id:8, ini:'PP', name:'Priya Patel',    asc:88, sim:84, conf:91, risk:'Low',    rtype:'b-grn', grad:94, rt:'pass', ramp:5,  prod:92,
+    strengths:['All-round Excellence','Empathy Leadership','Resolution Speed'],
+    weaknesses:[],
+    rec:'✅ Hire — Fast Track',
+    recNote:'Exceptional candidate. Fast track to production in 5 weeks. Strong predictive signal across all six dimensions.' }
 ];
 
-const ASSIST_STATES = [
-  [ // after msg 0
-    { lbl:'DETECTED INTENT',    val:'Network Complaint',                     cls:'' },
-    { lbl:'ARCHETYPE FORMING',  val:'Network Skeptic',                       cls:'' },
-    { lbl:'RECOMMENDED ACTION', val:'⚙️ Pull live diagnostics immediately',  cls:'' },
-    { lbl:'CHURN SIGNAL',       val:'Not yet detected',                      cls:'' }
-  ],
-  null, // agent message — no update
-  [ // after msg 2
-    { lbl:'DETECTED INTENT',    val:'Network Complaint + Churn Signal',          cls:'' },
-    { lbl:'ARCHETYPE',          val:'⚠️ Network Skeptic — Confirmed',            cls:'warn' },
-    { lbl:'CHURN RISK',         val:'67%',                                       cls:'warn' },
-    { lbl:'RECOMMENDED ACTION', val:'Acknowledge + escalate to priority ticket', cls:'' }
-  ],
-  [ // after msg 3
-    { lbl:'DETECTED INTENT',    val:'Competitive Comparison',                             cls:'' },
-    { lbl:'CHURN RISK',         val:'84%',                                                cls:'warn' },
-    { lbl:'RECOMMENDED ACTION', val:'Retention package + priority network ticket',        cls:'' },
-    { lbl:'SCRIPT SUGGESTION',  val:'"Let me escalate this to our network priority team."', cls:'' }
-  ],
-  [ // after msg 4
-    { lbl:'🚨 CRITICAL',        val:'91% Churn Risk',                                                       cls:'crit' },
-    { lbl:'RECOMMENDED ACTION', val:'Manager callback + Emergency loyalty offer',                            cls:'crit' },
-    { lbl:'SCRIPT SUGGESTION',  val:'"Connecting you to our priority team — resolved today."',               cls:'' },
-    { lbl:'LOYALTY OFFER',      val:'Eligible: 3-month discount + network priority tag',                    cls:'' }
-  ]
+const SCENARIOS = {
+  'late-fee':    { intent:'Late Fee Dispute',       emotion:'Frustrated', risk:'High',     complexity:'Moderate',
+    stmt:'I was charged a $35 late fee but I set up autopay. I want this removed immediately or I am leaving.',
+    top:'Acknowledge immediately. Pull autopay history in real time. Waive the fee proactively and confirm reactivation — all within 90 seconds without asking the customer to re-explain.',
+    fail:'Asking the customer to re-explain or leading with policy before acknowledging the error — agents lose the call within 60 seconds.' },
+  'autopay':     { intent:'AutoPay Cancellation',   emotion:'Confused',   risk:'Medium',   complexity:'Moderate',
+    stmt:'I cancelled my autopay because my bill keeps changing. Now I am getting late fees. This needs to be fixed.',
+    top:'Validate their logic — "Changing bills without explanation are confusing." Break down the bill in under 90 seconds. Offer a fixed plan or bill cap before they ask.',
+    fail:'Defending the billing structure before explaining it. Customers interpret this as the company not taking responsibility.' },
+  'damaged':     { intent:'Damaged Device',         emotion:'Frustrated', risk:'High',     complexity:'Advanced',
+    stmt:'My phone stopped working after a software update. I need a replacement. I have been a customer for 6 years.',
+    top:'Acknowledge tenure in the first sentence. Check warranty and protection eligibility in real time. Confirm outcome before ending the call — zero callbacks.',
+    fail:'Jumping to cost or policy eligibility before acknowledging 6-year loyalty. This immediately positions the company as transactional.' },
+  'port-out':    { intent:'Port-Out Prevention',    emotion:'Resigned',   risk:'Critical', complexity:'Critical',
+    stmt:'I am porting my number to a competitor today. Their plan is $30 cheaper and I am done with this service.',
+    top:'Skip discovery. Present a matched offer in the first 30 seconds. Confirm savings apply today. Top agents convert 38% of active port-outs by leading with the offer, not a question.',
+    fail:'Asking why they want to leave. The customer has already decided. Discovery questions signal hesitation and cost the conversation.' },
+  'network':     { intent:'Network Complaint',      emotion:'Angry',      risk:'High',     complexity:'Advanced',
+    stmt:'My data barely works. I have had network issues for 3 weeks and nobody has fixed it.',
+    top:'Acknowledge the failure directly — "Three weeks is not acceptable." Create a priority ticket live on the call. Read the number back. Schedule a 24-hour callback with a named engineer.',
+    fail:'Running the same diagnostic as the previous agent or promising vague resolution timelines. Trust has already been broken.' },
+  'bill-shock':  { intent:'Bill Shock',             emotion:'Confused',   risk:'Medium',   complexity:'Moderate',
+    stmt:'My bill is $47 higher than last month. Nobody told me about these charges. I want an explanation.',
+    top:'Pull the bill comparison immediately — do not ask them to describe it. Identify the exact $47 root cause and name it. Offer a credit if it was not communicated. First call resolution: 91%.',
+    fail:'Reading out line items without explaining what caused the specific increase. The customer wants a cause, not a list.' },
+  'cancellation':{ intent:'Cancellation Request',  emotion:'Resigned',   risk:'Critical', complexity:'Critical',
+    stmt:'I want to cancel my account. I have been trying to resolve an issue for two months and nothing has changed.',
+    top:'Acknowledge the failure without defensiveness. Offer a senior callback within 2 hours. Present a specific gesture — credit, upgrade, or waiver — before asking any questions.',
+    fail:'Starting with verification or asking for account details before acknowledging the 2-month failure. This confirms the customer is not the priority.' },
+  'upgrade':     { intent:'Upgrade Enquiry',        emotion:'Curious',    risk:'Low',      complexity:'Basic',
+    stmt:'I am interested in upgrading my device. What options do I have and what will it cost me?',
+    top:'Present two options personalised to their account and usage. Do not overwhelm with the full catalogue. Confirm trade-in value upfront. Top agents close upgrades in under 5 minutes.',
+    fail:'Reading from a generic list of all available devices. Customers want personalised recommendations, not a catalogue.' }
+};
+
+const SCENARIO_BANK = [
+  { key:'port-out',    label:'Port-Out Prevention',  diff:'Critical', dc:'b-red' },
+  { key:'cancellation',label:'Cancellation Request', diff:'Critical', dc:'b-red' },
+  { key:'late-fee',    label:'Late Fee Dispute',     diff:'Moderate', dc:'b-amb' },
+  { key:'damaged',     label:'Damaged Device',       diff:'Advanced', dc:'b-amb' },
+  { key:'network',     label:'Network Complaint',    diff:'Advanced', dc:'b-amb' },
+  { key:'bill-shock',  label:'Bill Shock',           diff:'Moderate', dc:'b-amb' }
 ];
 
-/* ---- STATE ---- */
-let txTimer  = null;
-let txIdx    = 0;
-let trainKey = 'late-fee';
+const HEATMAP_AGENTS = ['Sarah K.','Marcus R.','Aisha M.','David L.','Emily T.','Jordan W.','Chris P.','Alex B.'];
+const HEATMAP_SKILLS = ['Empathy','Problem Solving','Policy','Escalation','Communication','Resolution','Billing','Technical'];
+const HEATMAP_DATA = [
+  [2,3,3,1,2,2,1,2],
+  [3,3,2,2,3,3,2,3],
+  [1,2,1,1,2,1,2,1],
+  [3,3,3,3,3,3,3,3],
+  [2,3,2,3,3,2,3,2],
+  [3,2,3,2,2,3,2,3],
+  [2,2,2,2,3,2,2,2],
+  [3,3,3,3,3,3,3,3]
+];
 
-/* ---- switchTab ---- */
-function switchTab(name, btn) {
-  document.querySelectorAll('.tb').forEach(b => b.classList.remove('on'));
-  document.querySelectorAll('.pane').forEach(p => p.classList.remove('on'));
-  btn.classList.add('on');
-  document.getElementById('pane-' + name).classList.add('on');
+const FUNNEL_DATA = [
+  { name:'Applications', count:847,  rate:null },
+  { name:'Screened',     count:412,  rate:'49%' },
+  { name:'Assessment',   count:298,  rate:'72%' },
+  { name:'Interviewed',  count:187,  rate:'63%' },
+  { name:'Recommended',  count:134,  rate:'72%' },
+  { name:'Hired',        count:98,   rate:'73%' },
+  { name:'Training',     count:98,   rate:'100%'},
+  { name:'Prod. Ready',  count:87,   rate:'89%' }
+];
 
-  if (name === 'training') {
-    renderTrainContent(trainKey);
-    startTranscript();
-  } else {
-    stopTranscript();
+const DIM_FEEDBACK = {
+  strengths: ['Strong empathy acknowledgment detected early in response','Ownership language used — "I will fix this" rather than "our policy says"','Resolution pathway clearly communicated before details'],
+  improve:   ['Lead with resolution before policy explanation','Reduce explanation length — top agents use 30% fewer words','Add specific timeline commitment to close the loop'],
+  suggest:   '"I completely understand — that should not have happened. I am pulling up your account now and will remove that fee immediately. I can also confirm your autopay is active so this does not happen again. Does that work for you?"',
+  top:       'Top quartile agents on this intent type resolve in under 90 seconds. They apologise once, act immediately, confirm the fix, and close. Average response length: 42 words.'
+};
+
+/* ---- MODULE NAVIGATION ---- */
+function showModule(id, btn) {
+  document.querySelectorAll('.module').forEach(m => m.classList.remove('on'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('on'));
+  document.getElementById('mod-' + id).classList.add('on');
+  if (btn) btn.classList.add('on');
+  // Trigger progress bars on training and probation
+  if (id === 'training' || id === 'probation') {
+    setTimeout(animatePBars, 100);
   }
 }
 
-/* ---- onScenarioChange ---- */
-function onScenarioChange() {
-  const val = document.getElementById('sim-sel').value;
-  document.getElementById('sim-result').style.display = 'none';
+/* ---- CANDIDATE TABLE ---- */
+function buildCandidateTable() {
+  const tbody = document.getElementById('candidate-table-body');
+  if (!tbody) return;
+  const recColors = { pass:'b-grn', warn:'b-amb', fail:'b-red' };
+  tbody.innerHTML = CANDIDATES.map(c => `
+    <tr>
+      <td><div style="display:flex;align-items:center;gap:8px;"><div style="width:28px;height:28px;border-radius:50%;background:var(--purple);color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;">${c.ini}</div><span style="font-weight:700;">${c.name}</span></div></td>
+      <td style="font-weight:700;">${c.asc}th %ile</td>
+      <td>${c.sim}/100</td>
+      <td style="font-weight:700;">${c.conf}%</td>
+      <td><span class="badge ${c.rtype}">${c.risk}</span></td>
+      <td><span style="font-weight:700;color:${c.grad>=80?'var(--green)':c.grad>=65?'var(--amber)':'var(--red)'}">${c.grad}%</span></td>
+      <td><span class="badge ${recColors[c.rt]}">${c.rec}</span></td>
+      <td><button class="btn btn-out btn-sm" onclick="openCandidate(${c.id})">View Profile</button></td>
+    </tr>
+  `).join('');
+}
+
+/* ---- CANDIDATE MODAL ---- */
+function openCandidate(id) {
+  const c = CANDIDATES.find(x => x.id === id);
+  if (!c) return;
+  const recColor = c.rt === 'pass' ? 'var(--green)' : c.rt === 'warn' ? 'var(--amber)' : 'var(--red)';
+  const html = `
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px;">
+      <div style="width:60px;height:60px;border-radius:50%;background:var(--purple);color:#fff;font-size:22px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;">${c.ini}</div>
+      <div>
+        <div style="font-size:20px;font-weight:900;color:var(--charcoal);">${c.name}</div>
+        <div style="font-size:13px;color:var(--g500);">Candidate ID #C00${c.id} · Assessment complete</div>
+        <span class="badge ${c.rtype}" style="margin-top:4px;">${c.risk} Risk</span>
+      </div>
+    </div>
+
+    <div class="g2" style="gap:12px;margin-bottom:16px;">
+      <div class="card" style="padding:14px;">
+        <div style="font-size:11px;font-weight:700;color:var(--g500);text-transform:uppercase;margin-bottom:6px;">Assessment Score</div>
+        <div style="font-size:28px;font-weight:900;color:var(--purple);">${c.asc}th %ile</div>
+        <div style="font-size:12px;color:var(--g500);margin-top:2px;">vs 50th percentile threshold</div>
+      </div>
+      <div class="card" style="padding:14px;">
+        <div style="font-size:11px;font-weight:700;color:var(--g500);text-transform:uppercase;margin-bottom:6px;">Simulation Score</div>
+        <div style="font-size:28px;font-weight:900;color:var(--purple);">${c.sim}/100</div>
+        <div class="pb-bg" style="margin-top:6px;"><div class="pb-fill pb-pur" data-w="${c.sim}"></div></div>
+      </div>
+    </div>
+
+    <div class="g2" style="gap:12px;margin-bottom:16px;">
+      <div>
+        <div style="font-size:12px;font-weight:700;color:var(--g500);margin-bottom:6px;">Strengths</div>
+        ${c.strengths.map(s=>`<span class="badge b-grn" style="margin:2px;display:inline-flex;">${s}</span>`).join('')}
+        ${!c.strengths.length?'<span class="badge b-gry">None identified</span>':''}
+      </div>
+      <div>
+        <div style="font-size:12px;font-weight:700;color:var(--g500);margin-bottom:6px;">Development Areas</div>
+        ${c.weaknesses.map(w=>`<span class="badge b-amb" style="margin:2px;display:inline-flex;">${w}</span>`).join('')}
+        ${!c.weaknesses.length?'<span class="badge b-grn">No significant gaps</span>':''}
+      </div>
+    </div>
+
+    <div style="margin-bottom:16px;">
+      <div style="font-size:12px;font-weight:700;color:var(--g500);margin-bottom:8px;">Predictions</div>
+      <div class="pb-wrap"><div class="pb-row"><span>Graduation Probability</span><span class="pb-score" style="color:${c.grad>=80?'var(--green)':c.grad>=65?'var(--amber)':'var(--red)'}">${c.grad}%</span></div><div class="pb-bg"><div class="pb-fill" style="background:${c.grad>=80?'var(--green)':c.grad>=65?'var(--amber)':'var(--red)'}" data-w="${c.grad}"></div></div></div>
+      <div class="pb-wrap"><div class="pb-row"><span>Production Readiness</span><span class="pb-score" style="color:${c.prod>=80?'var(--green)':c.prod>=65?'var(--amber)':'var(--red)'}">${c.prod}%</span></div><div class="pb-bg"><div class="pb-fill" style="background:${c.prod>=80?'var(--green)':c.prod>=65?'var(--amber)':'var(--red)'}" data-w="${c.prod}"></div></div></div>
+      <div style="font-size:13px;color:var(--g700);margin-top:6px;">Expected ramp time: <strong>${c.ramp} weeks</strong></div>
+    </div>
+
+    <div style="background:${recColor};color:#fff;border-radius:10px;padding:16px;">
+      <div style="font-size:11px;font-weight:700;opacity:.8;text-transform:uppercase;margin-bottom:5px;">AI Recommendation</div>
+      <div style="font-size:15px;font-weight:800;margin-bottom:6px;">${c.rec}</div>
+      <div style="font-size:13px;opacity:.9;">${c.recNote}</div>
+    </div>
+
+    <div style="display:flex;gap:10px;margin-top:16px;">
+      ${c.rt!=='fail'?`<button class="btn btn-grn" onclick="alert('Hire approved for ${c.name}. Offer letter triggered.');closeModal(true);">Approve Hire</button>`:''}
+      <button class="btn btn-out" onclick="alert('Interview request sent for ${c.name}.')">Request Interview</button>
+      <button class="btn btn-red" style="margin-left:auto;" onclick="alert('${c.name} rejected. Candidate notified.');closeModal(true);">Reject</button>
+    </div>
+  `;
+  document.getElementById('modal-body').innerHTML = html;
+  document.getElementById('modal-overlay').classList.add('open');
+  setTimeout(() => {
+    document.querySelectorAll('#modal-body .pb-fill').forEach(b => { b.style.width = b.dataset.w + '%'; });
+  }, 80);
+}
+
+function closeModal(force) {
+  if (force === true || event?.target === document.getElementById('modal-overlay')) {
+    document.getElementById('modal-overlay').classList.remove('open');
+  }
+}
+
+/* ---- FUNNEL ---- */
+function buildFunnel() {
+  const container = document.getElementById('funnel-row');
+  if (!container) return;
+  const maxCount = FUNNEL_DATA[0].count;
+  let html = '';
+  FUNNEL_DATA.forEach((stage, i) => {
+    const heightPct = (stage.count / maxCount) * 100;
+    if (i > 0) html += `<div class="funnel-arr">›</div>`;
+    html += `
+      <div class="funnel-stage">
+        <div class="funnel-bar-wrap">
+          <div class="funnel-bar" style="height:${heightPct}%;"></div>
+        </div>
+        <div class="funnel-sname">${stage.name}</div>
+        <div class="funnel-cnt">${stage.count.toLocaleString()}</div>
+        <div class="funnel-rate">${stage.rate||'—'}</div>
+      </div>`;
+  });
+  container.innerHTML = html;
+}
+
+/* ---- SKILL HEATMAP ---- */
+function buildHeatmap() {
+  const grid = document.getElementById('heatmap-grid');
+  if (!grid) return;
+  const cols = HEATMAP_SKILLS.length + 1;
+  grid.style.gridTemplateColumns = `110px repeat(${HEATMAP_SKILLS.length},1fr)`;
+
+  let html = '<div class="hm-hdr"></div>';
+  HEATMAP_SKILLS.forEach(s => { html += `<div class="hm-hdr" style="text-align:center;">${s}</div>`; });
+
+  HEATMAP_AGENTS.forEach((agent, ai) => {
+    html += `<div class="hm-agent">${agent}</div>`;
+    HEATMAP_DATA[ai].forEach(val => {
+      const cls = val === 3 ? 'hm-hi' : val === 2 ? 'hm-md' : 'hm-lo';
+      const lbl = val === 3 ? 'Strong' : val === 2 ? 'Moderate' : 'Weak';
+      html += `<div class="hm-cell ${cls}">${lbl}</div>`;
+    });
+  });
+  grid.innerHTML = html;
+}
+
+/* ---- SCENARIO BANK ---- */
+function buildScenarioBank() {
+  const el = document.getElementById('scenario-bank');
+  if (!el) return;
+  el.innerHTML = SCENARIO_BANK.map(s => `
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--g100);cursor:pointer;" onclick="loadScenarioByKey('${s.key}')">
+      <span style="font-size:13px;font-weight:600;color:var(--g700);">${s.label}</span>
+      <span class="badge ${s.dc}">${s.diff}</span>
+    </div>
+  `).join('');
+}
+
+/* ---- ASSESSMENT SIMULATOR ---- */
+function updateScenarioBadges() {
+  const key = document.getElementById('intent-sel').value;
+  loadScenario();
+}
+
+function loadScenarioByKey(key) {
+  document.getElementById('intent-sel').value = key;
+  loadScenario();
+  // Scroll to assessment module
+  document.getElementById('mod-assessment').scrollIntoView({ behavior:'smooth', block:'start' });
+}
+
+function loadScenario() {
+  const key = document.getElementById('intent-sel').value;
+  const card = document.getElementById('sim-scenario-card');
+  const result = document.getElementById('sim-result');
   document.getElementById('sim-resp').value = '';
-  if (val && SIM_SCENARIOS[val]) {
-    document.getElementById('sim-txt').textContent = '“' + SIM_SCENARIOS[val] + '”';
-    document.getElementById('sim-callout').style.display = 'block';
+  result.style.display = 'none';
+
+  if (!key || !SCENARIOS[key]) {
+    card.style.display = 'none';
+    document.getElementById('emotion-badge').textContent = 'Emotion: —';
+    document.getElementById('risk-badge').textContent = 'Risk: —';
+    document.getElementById('emotion-badge').className = 'badge b-gry';
+    document.getElementById('risk-badge').className = 'badge b-gry';
+    return;
+  }
+
+  const s = SCENARIOS[key];
+  document.getElementById('sim-stmt').textContent = '"' + s.stmt + '"';
+  document.getElementById('top-perf').textContent = s.top;
+  document.getElementById('top-perf').style.display = 'none';
+  document.querySelector('.reveal-btn').textContent = '▶ Show top performer approach';
+  document.getElementById('sim-failure').textContent = s.fail;
+  card.style.display = 'block';
+
+  const eBadge = document.getElementById('emotion-badge');
+  const rBadge = document.getElementById('risk-badge');
+  const eClass = { Frustrated:'b-red', Angry:'b-red', Confused:'b-amb', Resigned:'b-amb', Curious:'b-grn' };
+  const rClass = { Critical:'b-red', High:'b-red', Medium:'b-amb', Low:'b-grn' };
+  eBadge.textContent = '😤 ' + s.emotion;
+  eBadge.className = 'badge ' + (eClass[s.emotion] || 'b-gry');
+  rBadge.textContent = '⚡ Risk: ' + s.risk;
+  rBadge.className = 'badge ' + (rClass[s.risk] || 'b-gry');
+}
+
+function toggleReveal(id) {
+  const el = document.getElementById(id);
+  const btn = document.querySelector('.reveal-btn');
+  const showing = el.style.display === 'block';
+  el.style.display = showing ? 'none' : 'block';
+  btn.textContent = showing ? '▶ Show top performer approach' : '▼ Hide top performer approach';
+}
+
+async function runAssessment() {
+  const intentKey = document.getElementById('intent-sel').value;
+  const resp = document.getElementById('sim-resp').value.trim();
+  const apiKey = document.getElementById('api-key-input').value.trim();
+  if (!intentKey) { alert('Please select a call intent first.'); return; }
+  if (!resp) { alert('Please type a response before scoring.'); return; }
+
+  if (apiKey) {
+    await runAssessmentWithClaude(intentKey, resp, apiKey);
   } else {
-    document.getElementById('sim-callout').style.display = 'none';
+    runAssessmentDemo(intentKey, resp);
   }
 }
 
-/* ---- runAssessment ---- */
-function runAssessment() {
-  const scenario = document.getElementById('sim-sel').value;
-  const response = document.getElementById('sim-resp').value.trim();
-  if (!scenario) { alert('Please select a call scenario first.'); return; }
-  if (!response) { alert('Please type a response before scoring.'); return; }
+async function runAssessmentWithClaude(intentKey, resp, apiKey) {
+  const s = SCENARIOS[intentKey];
+  const btn = document.getElementById('score-btn');
+  const loading = document.getElementById('score-loading');
+  const panel = document.getElementById('sim-result');
 
-  const METRICS = [
-    { label:'Resolution Quality',    score: ri(6,9) },
-    { label:'Empathy Signals',       score: ri(6,9) },
-    { label:'Process Adherence',     score: ri(7,9) },
-    { label:'Churn Risk Mitigation', score: ri(6,9) }
+  btn.disabled = true;
+  btn.textContent = 'Scoring…';
+  loading.style.display = 'block';
+  panel.style.display = 'none';
+
+  const prompt = `You are an expert contact centre quality assessor for a telecom company. Score the following agent response.
+
+SCENARIO:
+Intent: ${s.intent}
+Customer Emotion: ${s.emotion}
+Risk Level: ${s.risk}
+Customer Statement: "${s.stmt}"
+
+TOP PERFORMER APPROACH: ${s.top}
+COMMON FAILURE PATTERN: ${s.fail}
+
+AGENT RESPONSE TO SCORE:
+"${resp}"
+
+Score each dimension 1–10 based strictly on the agent's actual response. Be accurate and specific — do not give generic feedback. Return ONLY valid JSON with no markdown:
+{
+  "dimensions": [
+    {"label": "Empathy", "score": 0},
+    {"label": "Problem Solving", "score": 0},
+    {"label": "Policy Handling", "score": 0},
+    {"label": "Ownership", "score": 0},
+    {"label": "Communication", "score": 0},
+    {"label": "Resolution Quality", "score": 0}
+  ],
+  "percentile": 0,
+  "strengths": ["specific observation from their actual response", "specific observation", "specific observation"],
+  "improvements": ["specific gap in their actual response", "specific gap"],
+  "suggested_answer": "A rewritten version of their response in 30–50 words that demonstrates top performer behaviour",
+  "top_comparison": "One sentence comparing this response to top quartile agents on this specific intent"
+}`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'content-type': 'application/json',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 700,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+
+    if (!res.ok) {
+      const err = await res.json().catch(()=>({error:{message:'API error '+res.status}}));
+      throw new Error(err.error?.message || 'API error ' + res.status);
+    }
+
+    const data = await res.json();
+    const raw = data.content[0].text.trim();
+    const json = JSON.parse(raw);
+    renderAssessmentResult(json.dimensions, json.percentile || 72, json.strengths, json.improvements, json.suggested_answer, json.top_comparison);
+
+  } catch (e) {
+    loading.style.display = 'none';
+    btn.disabled = false;
+    btn.textContent = 'Score My Response';
+    alert('Claude API error: ' + e.message + '\n\nCheck your API key or try Demo Mode (clear the key field).');
+  }
+}
+
+function runAssessmentDemo(intentKey, resp) {
+  const DIMS = [
+    { label:'Empathy',              score:ri(6,9) },
+    { label:'Problem Solving',      score:ri(6,9) },
+    { label:'Policy Handling',      score:ri(7,9) },
+    { label:'Ownership',            score:ri(6,9) },
+    { label:'Communication',        score:ri(7,9) },
+    { label:'Resolution Quality',   score:ri(6,9) }
   ];
-  const pct  = ri(65, 85);
-  const pass = pct >= 50;
+  renderAssessmentResult(
+    DIMS, ri(62, 84),
+    DIM_FEEDBACK.strengths,
+    DIM_FEEDBACK.improve,
+    DIM_FEEDBACK.suggest,
+    DIM_FEEDBACK.top
+  );
+}
 
-  document.getElementById('sim-metrics').innerHTML = METRICS.map(m => `
+function renderAssessmentResult(dims, pct, strengths, improvements, suggest, topComp) {
+  const btn = document.getElementById('score-btn');
+  const loading = document.getElementById('score-loading');
+  btn.disabled = false;
+  btn.textContent = 'Score My Response';
+  loading.style.display = 'none';
+
+  const total = Math.round(dims.reduce((s,d)=>s+d.score,0) / dims.length * 10);
+  const pass  = pct >= 50;
+
+  document.getElementById('score-overall').textContent = total + '/100';
+  document.getElementById('score-pct').textContent = pct;
+  document.getElementById('score-badge-wrap').innerHTML =
+    `<span class="badge ${pass?'b-grn':'b-red'}" style="font-size:14px;padding:6px 18px;">${pass?'✅ PASS':'❌ BELOW THRESHOLD'}</span>`;
+
+  document.getElementById('sim-dimensions').innerHTML = dims.map(d => `
     <div class="pb-wrap">
-      <div class="pb-row"><span>${m.label}</span><span class="pb-score">${m.score}/10</span></div>
-      <div class="pb-bg"><div class="pb-fill" data-w="${m.score * 10}"></div></div>
-    </div>`).join('');
+      <div class="pb-row"><span>${d.label}</span><span class="pb-score">${d.score}/10</span></div>
+      <div class="pb-bg"><div class="pb-fill pb-pur" data-w="${d.score*10}"></div></div>
+    </div>
+  `).join('');
 
-  document.getElementById('sim-badge').innerHTML = `
-    <span class="badge ${pass ? 'b-grn' : 'b-red'}" style="font-size:15px;padding:8px 20px;">${pass ? '✅ PASS' : '❌ BELOW THRESHOLD'}</span>
-    <span style="font-size:24px;font-weight:900;color:var(--purple);">${pct}th Percentile</span>`;
+  const toLines = arr => Array.isArray(arr)
+    ? arr.map(s=>`<div style="margin-top:3px;">• ${s}</div>`).join('')
+    : `<div style="margin-top:3px;">${arr}</div>`;
+
+  document.getElementById('fb-strengths').innerHTML = toLines(strengths);
+  document.getElementById('fb-improve').innerHTML   = toLines(improvements);
+  document.getElementById('fb-suggest').textContent = suggest;
+  document.getElementById('fb-top').textContent     = topComp;
 
   const panel = document.getElementById('sim-result');
   panel.style.display = 'block';
@@ -810,99 +1601,67 @@ function runAssessment() {
   panel.scrollIntoView({ behavior:'smooth', block:'nearest' });
 }
 
-/* ---- switchTrain ---- */
-function switchTrain(key, btn) {
-  document.querySelectorAll('.pill').forEach(p => p.classList.remove('on'));
-  btn.classList.add('on');
-  trainKey = key;
-  renderTrainContent(key);
-  document.getElementById('train-fb').style.display = 'none';
-  document.getElementById('train-resp').value = '';
+/* ---- ANIMATE PROGRESS BARS ---- */
+function animatePBars() {
+  document.querySelectorAll('.module.on .pb-fill').forEach(b => {
+    b.style.width = (b.dataset.w || '0') + '%';
+  });
 }
 
-/* ---- renderTrainContent ---- */
-function renderTrainContent(key) {
-  const s = TRAIN_DATA[key];
-  if (!s) return;
-  document.getElementById('train-content').innerHTML = `
-    <div style="background:var(--g50);border-radius:10px;padding:20px;">
-      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:18px;">
-        <div style="font-size:14px;color:var(--g700);flex:1;line-height:1.6;">${s.desc}</div>
-        <span class="badge ${s.ebadge}" style="white-space:nowrap;font-size:12px;padding:5px 12px;">😤 ${s.emotion}</span>
-      </div>
-      <div class="g3" style="gap:16px;">
-        <div>
-          <div style="font-size:11px;font-weight:800;color:var(--g500);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;">Key Signals to Detect</div>
-          ${s.signals.map(x => `<div style="font-size:13px;color:var(--g700);margin-bottom:7px;padding-left:10px;border-left:2px solid var(--purple);">${x}</div>`).join('')}
-        </div>
-        <div>
-          <div style="font-size:11px;font-weight:800;color:var(--g500);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;">Response Framework</div>
-          ${s.steps.map((f,i) => `<div style="font-size:13px;color:var(--g700);margin-bottom:7px;"><strong style="color:var(--purple);">${i+1}.</strong> ${f}</div>`).join('')}
-        </div>
-        <div>
-          <div style="font-size:11px;font-weight:800;color:var(--g500);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;">Top Quartile Difference</div>
-          <div style="font-size:13px;color:var(--g700);margin-bottom:10px;padding:9px;background:var(--red-l);border-radius:7px;"><strong>Common mistake:</strong> ${s.mistake}</div>
-          <div style="font-size:13px;color:var(--g700);padding:9px;background:var(--green-l);border-radius:7px;">${s.top}</div>
-        </div>
-      </div>
-    </div>`;
+/* ---- CIRCULAR FLOW TOOLTIP ---- */
+function showRTooltip(event, text) {
+  const tt = document.getElementById('r-tooltip');
+  tt.textContent = text;
+  tt.style.display = 'block';
+  if (event) {
+    const svgRect = document.getElementById('flow-svg').getBoundingClientRect();
+    const cardRect = tt.closest ? null : null;
+    tt.style.left = (event.clientX - svgRect.left + 10) + 'px';
+    tt.style.top  = (event.clientY - svgRect.top  + 10) + 'px';
+  } else {
+    tt.style.left = '50%';
+    tt.style.top  = '50%';
+    tt.style.transform = 'translate(-50%,-50%)';
+  }
+  setTimeout(() => { tt.style.display = 'none'; }, 5000);
 }
 
-/* ---- showTrainFeedback ---- */
-function showTrainFeedback() {
-  if (!document.getElementById('train-resp').value.trim()) { alert('Please type a practice response first.'); return; }
-  const fb = document.getElementById('train-fb');
-  fb.style.display = 'block';
-  fb.scrollIntoView({ behavior:'smooth', block:'nearest' });
+/* ---- DATE ---- */
+function setDate() {
+  const el = document.getElementById('today-date');
+  if (!el) return;
+  const d = new Date();
+  el.textContent = d.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
 }
 
-/* ---- animateTranscript / startTranscript ---- */
-function startTranscript() {
-  stopTranscript();
-  const box = document.getElementById('transcript-box');
-  const ap  = document.getElementById('assist-panel');
-  if (!box || !ap) return;
+/* ---- UTIL ---- */
+function ri(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
 
-  box.innerHTML = '';
-  txIdx = 0;
-  ap.innerHTML = '<div class="a-row"><div class="a-lbl">Status</div><div class="a-val">Waiting for call data…</div></div>';
-
-  setTimeout(() => {
-    txTimer = setInterval(() => {
-      if (txIdx >= TRANSCRIPT_MSGS.length) { stopTranscript(); return; }
-      const m  = TRANSCRIPT_MSGS[txIdx];
-      const el = document.createElement('div');
-      el.className = 'msg';
-      el.innerHTML = `<div class="msg-bub ${m.cls}">
-        <div class="msg-sender" style="color:${m.cls==='msg-c'?'var(--red)':'var(--purple)'};">${m.speaker} <span style="color:var(--g400);font-weight:400;">${m.time}</span></div>
-        “${m.text}”</div>`;
-      box.appendChild(el);
-      box.scrollTop = box.scrollHeight;
-      const state = ASSIST_STATES[txIdx];
-      if (state) renderAssist(state);
-      txIdx++;
-    }, 3000);
-  }, 600);
+/* ---- API KEY BADGE TOGGLE ---- */
+function updateApiModeBadge() {
+  const val = document.getElementById('api-key-input').value.trim();
+  const badge = document.getElementById('api-mode-badge');
+  if (val) {
+    badge.textContent = '🤖 AI Mode';
+    badge.className = 'badge b-pur';
+  } else {
+    badge.textContent = 'Demo Mode';
+    badge.className = 'badge b-gry';
+  }
 }
-
-function stopTranscript() {
-  if (txTimer) { clearInterval(txTimer); txTimer = null; }
-}
-
-/* ---- renderAssist ---- */
-function renderAssist(rows) {
-  document.getElementById('assist-panel').innerHTML = rows.map(r =>
-    `<div class="a-row"><div class="a-lbl">${r.lbl}</div><div class="a-val ${r.cls}">${r.val}</div></div>`
-  ).join('');
-}
-
-/* ---- ri — random integer ---- */
-function ri(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
 
 /* ---- INIT ---- */
 document.addEventListener('DOMContentLoaded', () => {
-  renderTrainContent('late-fee');
+  setDate();
+  buildCandidateTable();
+  buildFunnel();
+  buildHeatmap();
+  buildScenarioBank();
+  document.getElementById('api-key-input').addEventListener('input', updateApiModeBadge);
+  // Animate any visible progress bars on initial load
+  setTimeout(animatePBars, 150);
 });
+
 </script>
 </body>
 </html>
